@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #47006D, #6B0057, #3D0F80);
+  color: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  border-bottom: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 80px;
+  height: auto;
+  margin-right: 15px;
+  margin-top: 5px;
+}
+
+.title h1 {
+  margin: 0;
+  font-size: 45px;
+  text-decoration: underline;
+   text-underline-offset: 6px;
+}
+
+.title p {
+  margin: 0;
+  font-size: 16px;
+  color: #ddd;
+}
+
+.login-btn {
+  background: linear-gradient(to right, #c657ff, #a24dfd);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.notice-board-section {
+  width: 90%;
+  max-width: 1000px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.notice-label {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 10px 30px;
+  border-radius: 10px;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.notice-board {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 40px;
+  height: 400px;
+}
