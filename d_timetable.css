@@ -6,6 +6,7 @@ body {
 .container {
   display: flex;
   height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar {
@@ -17,10 +18,9 @@ body {
   flex-direction: column;
   align-items: center;
   padding-top: 150px;
-  
-  /* Rounded right corners */
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
+  transition: transform 0.3s ease;
 }
 
 .side-btn {
@@ -28,13 +28,20 @@ body {
   color: black;
   border: none;
   padding: 10px;
-  margin: 14px 0; /* ⬅️ increased from 6px to 12px */
+  margin: 14px 0;
   width: 90%;
   cursor: pointer;
   border-radius: 6px;
   font-weight: bold;
+  transition: transform 0.2s ease;
 }
 
+.side-btn:hover {
+  transform: scale(1.1);
+  background: linear-gradient(to right, #861AC0, #3F0C5A, #861AC0);
+  color: white;
+  box-shadow: 0 4px 15px rgba(134, 26, 192, 0.4);
+}
 
 .logo-container {
   margin-top: auto;
@@ -60,6 +67,7 @@ body {
 .main-content {
   flex-grow: 1;
   padding: 40px;
+  overflow-y: auto;
 }
 
 .header-line h1 {
@@ -73,29 +81,79 @@ body {
   border-top: 2px solid #ccc;
   width: 100%;
 }
+
 .pdf-container {
   margin-top: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
 }
-.sidebar button {
-  transition: transform 0.2s ease;
-}
 
-.sidebar button:hover {
-  transform: scale(1.1);
-  background: linear-gradient(to right,#861AC0, #3F0C5A, #861AC0);
+/* Mobile Header for smaller screens */
+.mobile-header {
+  display: none;
+  background-color: #2C083F;
   color: white;
-  transition: all 0.3s ease;
+  padding: 12px 16px;
+  align-items: center;
+  justify-content: space-between;
 }
-.sidebar button:hover {
-  transform: scale(1.1);
-  background: linear-gradient(to right,#861AC0, #3F0C5A, #861AC0);
+
+.mobile-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+#menuToggle {
+  font-size: 24px;
+  background: none;
+  border: none;
   color: white;
-  box-shadow: 0 4px 15px rgba(134, 26, 192, 0.4);
-  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
 
+  .mobile-header {
+    display: flex;
+  }
 
+  .sidebar {
+    position: absolute;
+    top: 50px;
+    left: -240px;
+    height: calc(100% - 50px);
+    z-index: 1000;
+    transform: translateX(0);
+  }
+
+  .sidebar.show {
+    left: 0;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+
+  .pdf-container embed {
+    height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdf-container embed {
+    height: 300px;
+  }
+
+  .header-line h1 {
+    font-size: 20px;
+  }
+
+  .side-btn {
+    font-size: 14px;
+  }
+}
