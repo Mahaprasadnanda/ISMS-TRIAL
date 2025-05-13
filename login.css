@@ -17,7 +17,7 @@
   .left-section {
     flex: 1;
     background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),
-                url('iiit.jpg') center/cover no-repeat;
+                url('IIIT_Bhubaneswar_1.jpg') center/cover no-repeat;
     color: white;
     display: flex;
     align-items: center;
@@ -45,7 +45,7 @@
   
   .logo-text h6 {
     margin: 0;
-    font-size: 46px;
+    font-size: 51px;
     
     color: white;
     font-family: 'Inria Serif', serif;
@@ -62,7 +62,7 @@
   .right-section {
     width: 40%;
 
-    background: linear-gradient(135deg, #47006D, #6B0057, #3D0F80);
+    background: linear-gradient(180deg, #47006D, #6B0057, #3D0F80);
     display: flex;
     justify-content: center;
     align-items: center;
