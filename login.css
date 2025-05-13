@@ -91,14 +91,17 @@ body, html {
     position: relative;
     display: flex;
     align-items: center;
+    height: 48px;
 }
 .input-group input {
-    padding: 12px 40px 12px 40px;
+    height: 48px;
+    padding-left: 60px;
+    padding-right: 60px;
+    font-size: 16px;
     border: 2px solid transparent;
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
-    font-size: 16px;
     width: 100%;
     transition: border-color 0.3s ease;
 }
@@ -112,26 +115,42 @@ body, html {
 }
 .input-group .icon {
     position: absolute;
-    left: 12px;
-    color: #ccc;
+    top: 50%;
+    left: 24px;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
+    color: #ccc;
+    font-size: 20px;
 }
 .input-group .icon svg {
     width: 20px;
     height: 20px;
+    stroke: currentColor;
 }
 .input-group .toggle-password {
     position: absolute;
-    right: 12px;
-    color: #ccc;
-    cursor: pointer;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 20px;
 }
 .input-group .toggle-password svg {
     width: 20px;
     height: 20px;
+    stroke: currentColor;
+}
+.input-group .toggle-password:hover {
+    color: #fff;
+}
+.input-group .toggle-password span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .login-box button {
     background: linear-gradient(to right, #715be1, #771ebf);
@@ -217,4 +236,8 @@ body, html {
     .logo {
         height: 60px;
     }
+}
+
+.input-group input[type="password"] {
+    padding-right: 60px;
 }
