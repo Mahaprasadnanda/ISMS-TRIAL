@@ -60,8 +60,8 @@
   
   /* Right Section */
   .right-section {
-    width: 50%;
-    flex: 1;
+    width: 40%;
+
     background: linear-gradient(135deg, #47006D, #6B0057, #3D0F80);
     display: flex;
     justify-content: center;
@@ -106,7 +106,7 @@
   }
   
   .login-box input:focus {
-    border-color: #e541a6; /* Highlight border color on focus */
+    border-color: #e15d7e; /* Highlight border color on focus */
     outline: none;
     background-color: rgba(255, 255, 255, 0.15); /* Optional for better focus effect */
   }
