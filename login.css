@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  body, html {
+    height: 100%;
+  }
+  .container {
+    display: flex;
+    height: 100vh;
+    background-color: blanchedalmond;
+  }
+  .left-section {
+    flex: 1;
+   background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                url('iiit.jpg') center/cover no-repeat;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+   /* padding-right: 290px;
+    padding-top:40px ;
+    padding-left:40px ;*/
+    padding: 40px;
+    width: 50%;
+    height: 100%;
+  
+  }
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    color: white;
+  }
+  
+  .logo {
+    height: 60px;
+    width: auto;
+  }
+  
+  .logo-text {
+    display: flex;
+    flex-direction:column;
+  }
+  
+  .logo-text h1 {
+    margin: 0px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    padding-left: 200px;
+  
+  
+  
+  }
+  
+  .logo-text p {
+    margin: 0;
+    font-size: 14px;
+    color: #ccc;
+  }
+  
+  
+  /* Right Section */
+  .right-section {
+    width: 50%;
+    flex: 1;
+    background: linear-gradient(180deg, #47006D,#6B0057,#3D0F80);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .login-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+    color: white;
+    text-align: center;
+  }
+  
+  .login-box h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  
+  .login-box p {
+    font-size: 14px;
+    margin-bottom: 30px;
+    color: #eee;
+  }
+  
+  .login-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .login-box input {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
+  }
+  
+  .login-box input::placeholder {
+    color: #ccc;
+  }
+  
+  .login-box button {
+    background: linear-gradient(to right, #7B5CF9, #B76CF0);
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+  
+  .login-box button:hover {
+    background: linear-gradient(to right, #9b7eff, #cc8df5);
+  }
+  
+  .forgot {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #ddd;
+    text-decoration: none;
+  }
+  .forgot:hover {
+    text-decoration: underline;
+  }
