@@ -33,18 +33,21 @@ header {
   margin: auto;
   justify-content: center;
   padding: 20px;
-  border-radius: 10px;
-  background: #f9f9f9;
+  border-radius: 25px;
+  background: #e2acac;
   max-width: 700px;
+  min-height: 400px; 
 }
 
+
 .card {
-  background: white;
+  background: rgb(165, 251, 218);
   border-radius: 15px;
  cursor: pointer;
   text-align: center;
   padding: 30px 10px;
   transition: transform 0.2s;
+  box-shadow: #ff0000;
 }
 
 .card:hover {
