@@ -9,8 +9,8 @@ body, html {
 }
 .container {
     display: flex;
-    height: 100vh;
     flex-wrap: wrap;
+    min-height: 100vh;
 }
 .left-section {
     flex: 1;
@@ -55,6 +55,7 @@ body, html {
 }
 .right-section {
     width: 40%;
+    min-width: 350px;
     background: linear-gradient(180deg, #47006D, #6B0057, #3D0F80);
     display: flex;
     justify-content: center;
@@ -71,7 +72,6 @@ body, html {
     text-align: center;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(8px);
-    position: relative;
 }
 .login-box h2 {
     font-size: 32px;
@@ -91,17 +91,14 @@ body, html {
     position: relative;
     display: flex;
     align-items: center;
-    height: 48px;
 }
 .input-group input {
-    height: 48px;
-    padding-left: 60px;
-    padding-right: 60px;
-    font-size: 16px;
+    padding: 12px 40px 12px 40px;
     border: 2px solid transparent;
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
+    font-size: 16px;
     width: 100%;
     transition: border-color 0.3s ease;
 }
@@ -115,42 +112,26 @@ body, html {
 }
 .input-group .icon {
     position: absolute;
-    top: 50%;
-    left: 24px;
-    transform: translateY(-50%);
+    left: 12px;
+    color: #ccc;
     display: flex;
     align-items: center;
-    color: #ccc;
-    font-size: 20px;
 }
 .input-group .icon svg {
     width: 20px;
     height: 20px;
-    stroke: currentColor;
 }
 .input-group .toggle-password {
     position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
+    right: 12px;
     color: #ccc;
     cursor: pointer;
-    font-size: 20px;
+    display: flex;
+    align-items: center;
 }
 .input-group .toggle-password svg {
     width: 20px;
     height: 20px;
-    stroke: currentColor;
-}
-.input-group .toggle-password:hover {
-    color: #fff;
-}
-.input-group .toggle-password span {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 .login-box button {
     background: linear-gradient(to right, #715be1, #771ebf);
@@ -183,61 +164,66 @@ body, html {
     left: 40px;
 }
 
-/* Responsive styles */
-@media (max-width: 1024px) {
+/* 📱 Responsive for mobile/tablet */
+@media (max-width: 768px) {
     .container {
         flex-direction: column;
     }
-    .left-section {
-        height: 40vh;
-        padding: 20px;
-        justify-content: center;
-        background-position: center;
-    }
-    .right-section {
-        width: 100%;
-        height: 60vh;
-        box-shadow: none;
-    }
-    .login-box {
-        padding: 40px 20px;
-        max-width: 90%;
-    }
-    .logo-block.top-aligned {
-        position: static;
-        justify-content: center;
-    }
-    .logo-text h6 {
-        font-size: 28px;
-    }
-    .logo-text p {
-        font-size: 13px;
-    }
-}
 
-@media (max-width: 600px) {
-    .login-box h2 {
-        font-size: 24px;
+    .left-section {
+        padding: 20px;
+        justify-content: flex-start;
+        min-height: 300px;
     }
-    .login-box p {
-        font-size: 13px;
+
+    .logo-block.top-aligned {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-bottom: 20px;
     }
-    .input-group input {
-        font-size: 14px;
-        padding: 10px 38px;
-    }
-    .login-box button {
-        padding: 12px;
-        font-size: 15px;
-    }
-    .forgot {
-        font-size: 12px;
-    }
+
     .logo {
         height: 60px;
     }
-}
 
-.input-group input[type="password"] {
-    padding-right: 60px;
+    .logo-text h6 {
+        font-size: 28px;
+        text-underline-offset: 4px;
+    }
+
+    .logo-text p {
+        font-size: 13px;
+    }
+
+    .right-section {
+        width: 100%;
+        padding: 20px;
+        box-shadow: none;
+    }
+
+    .login-box {
+        padding: 40px 25px;
+    }
+
+    .login-box h2 {
+        font-size: 26px;
+    }
+
+    .login-box p {
+        font-size: 14px;
+    }
+
+    .input-group input {
+        font-size: 14px;
+    }
+
+    .login-box button {
+        font-size: 15px;
+        padding: 12px;
+    }
+
+    .forgot {
+        font-size: 12px;
+    }
 }
