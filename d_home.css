@@ -10,11 +10,9 @@ body, html {
     background: #ffffff;
 }
 
-.dashboard-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+.container {
     padding: 20px;
+    min-height: 100vh;
     position: relative;
 }
 
@@ -94,15 +92,11 @@ header {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     border-radius: 20px;
     padding: 40px;
-    margin: 0;
+    margin: 0 auto 40px;
     max-width: 700px;
     width: 100%;
     gap: 40px;
     transition: transform 0.3s ease-in-out;
-    position: absolute;
-    bottom: 420px;
-    left: 50%;
-    transform: translateX(-50%);
 }
 
 .shadow-box .director-photo {
@@ -148,7 +142,7 @@ header {
 }
 
 .shadow-box:hover {
-    transform: translateX(-50%) scale(1.02);
+    transform: scale(1.02);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
@@ -159,11 +153,7 @@ header {
     justify-content: center;
     padding: 15px;
     max-width: 900px;
-    width: 100%;
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
+    margin: 0 auto;
 }
 
 .card {
@@ -235,150 +225,73 @@ header {
     color: #861AC0;
 }
 
-.sections {
-    margin-top: 15px;
-    max-width: 900px; /* Reduced to match dashboard width */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.section {
-    background: white;
-    border-radius: 10px;
+/* 📱 Responsive Styles */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
     padding: 20px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-.section h2 {
-    font-size: 20px; /* Reduced from 24px */
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 15px;
-}
-
-.details-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Slightly smaller items */
-    gap: 10px;
-}
-
-.detail-item {
-    background: #f9f9f9;
-    padding: 12px;
-    border-radius: 6px;
-}
-
-.detail-item h4 {
-    font-size: 14px; /* Reduced from 16px */
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    color: #47006D;
-    margin-bottom: 4px;
-}
-
-.detail-item p {
-    font-size: 12px; /* Reduced from 14px */
-    color: #666;
-}
-
-.notice-form, .password-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-width: 400px; /* Reduced from 500px */
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    font-size: 12px; /* Reduced from 14px */
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 4px;
-}
-
-.form-group input,
-.form-group textarea {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 12px;
-    width: 100%;
-}
-
-.form-group textarea {
-    height: 80px; /* Reduced from 100px */
-    resize: vertical;
-}
-
-.notice-form button, .password-form button {
-    background: linear-gradient(to right, #7B5CF9, #B76CF0);
-    padding: 8px;
-    font-size: 14px; /* Reduced from 16px */
-    border: none;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s ease;
-}
-
-.notice-form button:hover, .password-form button:hover {
-    background: linear-gradient(to right, #9b7eff, #cc8df5);
-}
-
-.time-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 8px;
-}
-
-.time-table th,
-.time-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
     text-align: center;
-}
+  }
 
-.time-table th {
-    background: #47006D;
-    color: white;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-}
+  .dashboard-heading {
+    font-size: 28px;
+    padding-left: 0;
+  }
 
-.time-table td {
-    background: #f9f9f9;
-    color: #333;
-}
+  .dashboard-heading::before {
+    display: none;
+  }
 
-.grievance-list {
-    display: flex;
+  .header-right {
+    justify-content: center;
+  }
+
+  .shadow-box {
     flex-direction: column;
-    gap: 12px;
-    max-width: 400px; /* Reduced from 500px */
+    padding: 20px;
+    margin-top: 20px;
+    gap: 20px;
+  }
+
+  .shadow-box img {
+    width: 140px;
+    height: 140px;
+  }
+
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 30px;
+  }
+
+  .card {
+    height: auto;
+    padding: 20px 15px;
+  }
 }
 
-.grievance-item {
-    background: #f9f9f9;
-    padding: 12px;
-    border-radius: 6px;
-}
+@media (max-width: 480px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
 
-.grievance-item h4 {
-    font-size: 14px; /* Reduced from 16px */
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    color: #47006D;
-    margin-bottom: 4px;
-}
+  .logo {
+    width: 90px;
+  }
 
-.grievance-item p {
-    font-size: 12px; /* Reduced from 14px */
-    color: #666;
+  .shadow-box h3 {
+    font-size: 22px;
+  }
+
+  .shadow-box p {
+    font-size: 14px;
+  }
+
+  .card img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .card p {
+    font-size: 14px;
+  }
 }
