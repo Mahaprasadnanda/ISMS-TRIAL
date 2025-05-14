@@ -21,95 +21,42 @@
 
         <div class="notice-board-section">
             <div class="notice-header">
-                <div class="notice-label">Notice Board</div>
+                <div class="notice-label">NOTICE BOARD</div>
             </div>
-            <div class="notice-board">
+            <div class="notice-board" id="notice-board">
+                <!-- Hardcoded notice for demo -->
                 <div class="notice-item">
                     <div class="notice-meta">
-                        <div class="notice-date">March 15, 2024</div>
-                        <div class="notice-time">10:30 AM</div>
+                        <div class="notice-date">May 14, 2025</div>
+                        <div class="notice-time">05:30 PM</div>
                     </div>
-                    <div class="notice-title">Important Announcement</div>
+                    <div class="notice-title">Demo Notice</div>
                     <div class="notice-content">
-                        Welcome to the new academic session. All students are requested to complete their registration process by March 20, 2024.
+                        This is a demo notice hardcoded for demonstration purposes. The actual notices will be loaded from the backend when available.
                     </div>
                     <div class="notice-footer">
-                        <span class="notice-author">Office of the Registrar</span>
-                        <span class="notice-ref">Ref: IIITB/2024/001</span>
-                    </div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-meta">
-                        <div class="notice-date">March 14, 2024</div>
-                        <div class="notice-time">02:45 PM</div>
-                    </div>
-                    <div class="notice-title">Campus Update</div>
-                    <div class="notice-content">
-                        The new research laboratory will be inaugurated next week. All faculty members are invited to attend the ceremony.
-                    </div>
-                    <div class="notice-footer">
-                        <span class="notice-author">Office of the Director</span>
-                        <span class="notice-ref">Ref: IIITB/2024/002</span>
-                    </div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-meta">
-                        <div class="notice-date">March 13, 2024</div>
-                        <div class="notice-time">11:15 AM</div>
-                    </div>
-                    <div class="notice-title">Research Grant Announcement</div>
-                    <div class="notice-content">
-                        Applications are now open for the annual research grant program. Faculty members are encouraged to submit their proposals by April 1, 2024.
-                    </div>
-                    <div class="notice-footer">
-                        <span class="notice-author">Research Office</span>
-                        <span class="notice-ref">Ref: IIITB/2024/003</span>
-                    </div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-meta">
-                        <div class="notice-date">March 12, 2024</div>
-                        <div class="notice-time">09:00 AM</div>
-                    </div>
-                    <div class="notice-title">Sports Meet Registration</div>
-                    <div class="notice-content">
-                        Annual sports meet registration is now open. Students can register for various events through the student portal until March 25, 2024.
-                    </div>
-                    <div class="notice-footer">
-                        <span class="notice-author">Sports Committee</span>
-                        <span class="notice-ref">Ref: IIITB/2024/004</span>
-                    </div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-meta">
-                        <div class="notice-date">March 11, 2024</div>
-                        <div class="notice-time">03:30 PM</div>
-                    </div>
-                    <div class="notice-title">Library Hours Update</div>
-                    <div class="notice-content">
-                        The central library will remain open 24/7 during the examination period. Extended hours will be effective from March 20 to April 15, 2024.
-                    </div>
-                    <div class="notice-footer">
-                        <span class="notice-author">Library Department</span>
-                        <span class="notice-ref">Ref: IIITB/2024/005</span>
-                    </div>
-                </div>
-                <div class="notice-item">
-                    <div class="notice-meta">
-                        <div class="notice-date">March 10, 2024</div>
-                        <div class="notice-time">01:20 PM</div>
-                    </div>
-                    <div class="notice-title">Placement Drive Schedule</div>
-                    <div class="notice-content">
-                        The upcoming placement drive will commence from April 5, 2024. All final year students are required to update their profiles on the placement portal by March 30, 2024. Companies including Google, Microsoft, and Amazon will be participating in this drive.
-                    </div>
-                    <div class="notice-footer">
-                        <span class="notice-author">Placement Cell</span>
-                        <span class="notice-ref">Ref: IIITB/2024/006</span>
+                        <span class="notice-author">Administration Office</span>
+                        <span class="notice-ref">Ref: IIITB/2025/DEMO</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Responsive adjustments
+            function handleResize() {
+                if (window.innerWidth < 768) {
+                    document.querySelector('.welcome-header').classList.add('mobile-view');
+                } else {
+                    document.querySelector('.welcome-header').classList.remove('mobile-view');
+                }
+            }
+
+            window.addEventListener('resize', handleResize);
+            handleResize(); // Initial check
+        });
+    </script>
 </body>
 </html>
