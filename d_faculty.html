@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Faculty Details - IIIT Bhubaneswar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   <link rel="stylesheet" href="d_faculty.css">
+</head>
+<body>
+
+<header class="mobile-header">
+    <button id="menuToggle"><i class="fas fa-bars"></i></button>
+    <h2>Faculty Details</h2>
+</header>
+
+<div class="container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <a href="d_home.html" class="back-btn-sidebar">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+            <button class="side-btn"><i class="fas fa-user-graduate"></i> Student Details</button>
+            <button class="side-btn"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</button>
+            <button class="side-btn"><i class="fas fa-calendar-alt"></i> Timetable</button>
+            <button class="side-btn"><i class="fas fa-comment-alt"></i> Grievance</button>
+
+            <div class="logo-container">
+                <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+                <p class="footer-text">IIIT Student Management System</p>
+                <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header-line">
+            <h1><i class="fas fa-chalkboard-teacher"></i> Faculty Details</h1>
+            <hr />
+        </div>
+
+        <div class="faculty-section">
+            <div class="search-container">
+                <input type="text" id="searchFacultyID" placeholder="Search by ID" />
+                <input type="text" id="searchFacultyName" placeholder="Search by Name" />
+                <select id="searchDepartment">
+                    <option value="">All Departments</option>
+                    <option value="CSE">CSE</option>
+                    <option value="ECE">ECE</option>
+                    <option value="Basic Science">Basic Science and Humanities</option>
+                </select>
+                <button onclick="searchFaculty()">Search</button>
+            </div>
+
+            <div class="results-container">
+                <ul id="facultyList"></ul>
+                <p id="noFacultyMessage">No faculty found matching your search criteria.</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="popup-overlay" id="popupOverlay"></div>
+<div class="faculty-popup" id="facultyPopup">
+    <img id="popupPhoto" src="https://via.placeholder.com/120" alt="Faculty Photo" />
+    <h3 id="popupName">Faculty Name</h3>
+    <div class="faculty-info-grid">
+        <div class="info-row">
+            <span class="label">Unique ID</span>
+            <span class="value" id="popupID"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Department</span>
+            <span class="value" id="popupDepartment"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Designation</span>
+            <span class="value" id="popupDesignation"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Experience</span>
+            <span class="value" id="popupExperience"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Currently Teaching</span>
+            <span class="value" id="popupTeaching"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Qualification</span>
+            <span class="value" id="popupQualification"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Contact</span>
+            <span class="value" id="popupContact"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Last Login</span>
+            <span class="value" id="popupLogin"></span>
+        </div>
+    </div>
+    <button class="close-btn" onclick="closePopup()">Close</button>
+</div>
+
+<script>
+    const facultyList = [
+        {
+            name: "Dr. Anita Sharma",
+            id: "F1001",
+            department: "CSE",
+            experience: "12 years at NIT Rourkela",
+            currentlyTeaching: "Data Structures, Algorithms",
+            qualification: "Ph.D. in Computer Science",
+            contact: "anita@iiitbh.ac.in | 9876543210",
+            lastLogin: "2025-05-13 14:30",
+            designation: "Professor",
+            photo: "images/anita.jpg"
+        },
+        {
+            name: "Prof. Rakesh Verma",
+            id: "F1002",
+            department: "ECE",
+            experience: "9 years at IIIT Hyderabad",
+            currentlyTeaching: "Digital Signal Processing",
+            qualification: "M.Tech in VLSI",
+            contact: "rakesh@iiitbh.ac.in | 9830011122",
+            lastLogin: "2025-05-12 10:05",
+            designation: "Associate Professor",
+            photo: "images/rakesh.jpg"
+        },
+        {
+            name: "Prof. Kau Khan",
+            id: "F1003",
+            department: "Zihad",
+            experience: "9 years at karachi university",
+            currentlyTeaching: "Digital Signal Processing in AFG",
+            qualification: "M.Tech in Bomb blasting jaise-e-mohammad",
+            contact: "khankau@iiitbh.ac.in | 9830011122",
+            lastLogin: "2025-05-12 10:05",
+            designation: "Associate MUZAHID",
+            photo: "images.jpg"
+        }
+    ];
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hide no results message initially
+        document.getElementById('noFacultyMessage').style.display = 'none';
+        document.getElementById('facultyList').style.display = 'none';
+    });
+
+    const searchFaculty = () => {
+        const id = document.getElementById("searchFacultyID").value.toLowerCase();
+        const name = document.getElementById("searchFacultyName").value.toLowerCase();
+        const dept = document.getElementById("searchDepartment").value;
+
+        const listEl = document.getElementById("facultyList");
+        const noMsg = document.getElementById("noFacultyMessage");
+        listEl.innerHTML = "";
+
+        const result = facultyList.filter(f =>
+            f.id.toLowerCase().includes(id) &&
+            f.name.toLowerCase().includes(name) &&
+            (dept === "" || f.department === dept)
+        );
+
+        if (result.length === 0) {
+            listEl.style.display = 'none';
+            noMsg.style.display = "block";
+        } else {
+            listEl.style.display = 'block';
+            noMsg.style.display = "none";
+            result.forEach(faculty => {
+                const li = document.createElement("li");
+                li.textContent = `${faculty.name} (${faculty.id}) - ${faculty.department} ${faculty.designation}`;
+                li.onclick = () => showFacultyDetails(faculty);
+                listEl.appendChild(li);
+            });
+        }
+    };
+
+    const showFacultyDetails = (faculty) => {
+        document.getElementById("popupName").innerText = faculty.name;
+        document.getElementById("popupID").innerText = faculty.id;
+        document.getElementById("popupExperience").innerText = faculty.experience;
+        document.getElementById("popupTeaching").innerText = faculty.currentlyTeaching;
+        document.getElementById("popupQualification").innerText = faculty.qualification;
+        document.getElementById("popupDepartment").innerText = faculty.department;
+        document.getElementById("popupContact").innerText = faculty.contact;
+        document.getElementById("popupLogin").innerText = faculty.lastLogin;
+        document.getElementById("popupPhoto").src = faculty.photo || "https://via.placeholder.com/120";
+        document.getElementById("popupDesignation").innerText = faculty.designation;
+        document.getElementById("facultyPopup").style.display = "flex";
+        document.getElementById("popupOverlay").style.display = "block";
+    };
+
+    const closePopup = () => {
+        document.getElementById("facultyPopup").style.display = "none";
+        document.getElementById("popupOverlay").style.display = "none";
+    };
+
+    // Menu toggle functionality
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("sidebar");
+
+    menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("show");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove("show");
+            }
+        }
+    });
+
+    // Add event listeners for Enter key
+    document.getElementById('searchFacultyID').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') searchFaculty();
+    });
+
+    document.getElementById('searchFacultyName').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') searchFaculty();
+    });
+</script>
+</body>
+</html>
