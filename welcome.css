@@ -93,13 +93,16 @@ body::after {
     font-weight: 700;
     background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
+    
 }
 
 .title p {
     margin: 2px 0 0 0;
-    font-size: 0.7rem;
+    font-size: 1.0 rem;
     color: rgba(255, 255, 255, 0.8);
     font-weight: 400;
 }
