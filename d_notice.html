@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Notice Board Input - IIIT Bhubaneswar</title>
+    <link rel="stylesheet" href="d_notice.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<header class="mobile-header">
+    <button id="menuToggle"><i class="fas fa-bars"></i></button>
+    <h2>Notice Board</h2>
+</header>
+
+<div class="container">
+    <aside class="sidebar" id="sidebar">
+        <a href="d_home.html" class="back-btn-sidebar">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+        <button class="side-btn"><i class="fas fa-user-graduate"></i> Student Details</button>
+        <button class="side-btn"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</button>
+        <button class="side-btn"><i class="fas fa-calendar-alt"></i> Timetable</button>
+        <button class="side-btn"><i class="fas fa-comment-alt"></i> Grievance</button>
+
+        <div class="logo-container">
+            <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+            <p class="footer-text">IIIT Student Management System</p>
+            <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header-line">
+            <div class="header-content">
+                <h1><i class="fas fa-bullhorn"></i> Notice Board</h1>
+                <button class="post-notice-btn" id="postNoticeBtn">
+                    <i class="fas fa-plus"></i> Post Notice
+                </button>
+            </div>
+            <hr />
+        </div>
+
+        <div class="notice-section">
+            <div class="notice-list" id="noticeList">
+                <!-- Notice items will be added here dynamically -->
+            </div>
+            <p id="noNoticeMessage">No notices found.</p>
+        </div>
+    </main>
+</div>
+
+<div class="popup-overlay" id="noticePopupOverlay"></div>
+<div class="notice-popup" id="noticePopup">
+    <div class="popup-header">
+        <h3>Post a Notice</h3>
+        <button id="closeNoticePopupBtn" class="close-btn">Close</button>
+    </div>
+    <form class="notice-form" id="noticeForm">
+        <label for="noticeTitle">Title</label>
+        <input type="text" id="noticeTitle" required>
+        <label for="noticeContent">Content</label>
+        <textarea id="noticeContent" required></textarea>
+        <label for="attention">Attention</label>
+        <select id="attention" name="attention" required>
+            <option value="">Select Audience</option>
+            <option value="students">Students</option>
+            <option value="faculty">Faculty</option>
+            <option value="btech-cse">B.Tech CSE</option>
+            <option value="btech-it">B.Tech IT</option>
+            <option value="mtech-cse">M.Tech CSE</option>
+            <option value="phd-cse">PhD CSE</option>
+        </select>
+        <label for="document">Attach Document (optional)</label>
+        <input type="file" id="document" name="document" />
+        <button type="submit" class="post-btn"><i class="fas fa-bullhorn"></i> Post Notice</button>
+    </form>
+</div>
+
+<div class="notice-details-popup" id="noticeDetailsPopup">
+    <div class="popup-header">
+        <h3 id="noticePopupTitle">Notice Details</h3>
+        <button id="closeNoticeDetailsBtn" class="close-btn-red">Close</button>
+    </div>
+    <div class="notice-info-grid">
+        <div class="info-row">
+            <span class="label">Notice ID</span>
+            <span class="value" id="noticePopupID"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Date & Time</span>
+            <span class="value" id="noticePopupDateTime"></span>
+        </div>
+        <div class="info-row">
+            <span class="label">Attention</span>
+            <span class="value" id="noticePopupAttention"></span>
+        </div>
+        <div class="info-row full-width">
+            <span class="label">Title</span>
+            <span class="value" id="noticePopupTitle"></span>
+        </div>
+        <div class="info-row full-width">
+            <span class="label">Content</span>
+            <span class="value" id="noticePopupContent"></span>
+        </div>
+        <div class="info-row full-width" id="noticeDocumentRow">
+            <span class="label">Attached Document</span>
+            <span class="value" id="noticePopupDocument"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("sidebar");
+
+    menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("show");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove("show");
+            }
+        }
+    });
+</script>
+
+<script src="d_notice.js"></script>
+</body>
+</html>
