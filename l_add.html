@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Book Details - IIIT Bhubaneswar</title>
+    <link rel="stylesheet" href="l_add.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header class="mobile-header">
+    <button id="menuToggle"><i class="fas fa-bars"></i></button>
+    <h2>Add New Book</h2>
+</header>
+
+<div class="container">
+    <aside class="sidebar" id="sidebar">
+        <a href="L_home.html" class="back-btn-sidebar">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+        <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+        <button class="side-btn"><i class="fas fa-user-graduate"></i> Student Details</button>
+        <button class="side-btn"><i class="fas fa-book"></i> Book Issue</button>
+        <button class="side-btn"><i class="fas fa-book-reader"></i> Book Return</button>
+        <button class="side-btn"><i class="fas fa-book-open"></i> Book Details</button>
+        <button class="side-btn"><i class="fas fa-book-medical"></i> Add New Book</button>
+        <button class="side-btn"><i class="fas fa-calendar-alt"></i> Timetable</button>
+        <div class="logo-container">
+            <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+            <p class="footer-text">IIIT Student Management System</p>
+            <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header-line">
+            <h1><i class="fas fa-file-medical"></i> Add New Book</h1>
+            <hr />
+        </div>
+
+        <div class="add-book-form">
+            <h2>Add Book Manually</h2>
+            <form id="manualBookForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookName">Book Name</label>
+                        <input type="text" id="bookName" name="bookName" placeholder="Enter book name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookCode">Book Code</label>
+                        <input type="text" id="bookCode" name="bookCode" placeholder="Enter book code" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookCount">Count</label>
+                        <input type="number" id="bookCount" name="bookCount" placeholder="Enter number of copies" min="1" required>
+                    </div>
+                    <div class="form-group form-group-button">
+                        <button type="submit">Add Books</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="add-book-form excel-upload-form">
+            <h2>Upload Excel File</h2>
+            <form id="excelUploadForm">
+                <div class="form-row">
+                    <div class="form-group form-group-file">
+                        <label for="excelFile">Select Excel File</label>
+                        <input type="file" id="excelFile" name="excelFile" accept=".xlsx, .xls" required>
+                    </div>
+                    <div class="form-group form-group-button">
+                        <button type="submit">Add Books</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="results-container" id="resultsContainer">
+        </div>
+    </main>
+</div>
+
+<script>
+    // Toggle sidebar for mobile view
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('show');
+    });
+
+    // Handle manual book form submission
+    document.getElementById('manualBookForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const bookName = document.getElementById('bookName').value;
+        const bookCode = document.getElementById('bookCode').value;
+        const bookCount = document.getElementById('bookCount').value;
+
+        if (bookName && bookCode && bookCount > 0) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const successMsg = document.createElement('div');
+            successMsg.className = 'success-msg';
+            successMsg.textContent = `Book "${bookName}" (Code: ${bookCode}, Count: ${bookCount}) added successfully!`;
+            resultsContainer.appendChild(successMsg);
+            alert(`Success! Book "${bookName}" (Code: ${bookCode}, Count: ${bookCount}) has been added.`);
+            this.reset();
+        } else {
+            alert('Please fill all fields correctly.');
+        }
+    });
+
+    // Handle Excel file upload form submission
+    document.getElementById('excelUploadForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const excelFile = document.getElementById('excelFile').files[0];
+
+        if (excelFile && (excelFile.type === 'application/vnd.ms-excel' || excelFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const successMsg = document.createElement('div');
+            successMsg.className = 'success-msg';
+            successMsg.textContent = `Excel file "${excelFile.name}" uploaded successfully! Books will be processed.`;
+            resultsContainer.appendChild(successMsg);
+            alert(`Success! Excel file "${excelFile.name}" has been uploaded. Books will be processed.`);
+            this.reset();
+        } else {
+            alert('Please upload a valid Excel file (.xlsx or .xls).');
+        }
+    });
+</script>
+
+</body>
+</html>

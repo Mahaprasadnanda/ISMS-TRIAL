@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Issue - IIIT Bhubaneswar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="l_issue.css" />
+</head>
+<body>
+
+<header class="mobile-header">
+  <button id="menuToggle"><i class="fas fa-bars"></i></button>
+  <h2>Book Issue</h2>
+</header>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <a href="L_home.html" class="back-btn-sidebar"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+    <button class="side-btn"><i class="fas fa-book"></i> Book Issue</button>
+    <button class="side-btn"><i class="fas fa-book-reader"></i> Book Return</button>
+    <button class="side-btn"><i class="fas fa-book-open"></i> Book Details</button>
+    <button class="side-btn"><i class="fas fa-book-medical"></i> Add New Book</button>
+    <button class="side-btn"><i class="fas fa-calendar-alt"></i> Timetable</button>
+    <div class="logo-container">
+      <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+      <p class="footer-text">IIIT Student Management System</p>
+      <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header-line">
+      <h1><i class="fas fa-book"></i> Book Issue</h1><hr />
+    </div>
+
+    <div class="issue-container">
+      <div class="student-search">
+        <div class="form-group">
+          <label for="studentId"><i class="fas fa-user-graduate"></i> Enter Student ID</label>
+          <div class="search-input-group">
+            <input type="text" id="studentId" placeholder="Enter student ID" />
+            <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="student-details" id="studentDetails"></div>
+      <div class="issue-status" id="issueStatus"></div>
+    </div>
+
+    <div class="modal" id="issueBookModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Issue Book</h2>
+          <button class="close-btn" id="closeIssueModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="bookCode"><i class="fas fa-barcode"></i> Book Code</label>
+            <input type="text" id="bookCode" placeholder="Enter book code" />
+          </div>
+          <button class="issue-btn" id="issueBtn"><i class="fas fa-check-circle"></i> Issue Book</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const studentIdInput = document.getElementById("studentId");
+  const bookCodeInput = document.getElementById("bookCode");
+  const issueBtn = document.getElementById("issueBtn");
+  const issueStatus = document.getElementById("issueStatus");
+  const studentDetails = document.getElementById("studentDetails");
+  const issueBookModal = document.getElementById("issueBookModal");
+  const closeIssueModal = document.getElementById("closeIssueModal");
+  const searchBtn = document.getElementById("searchBtn");
+
+  const availableBooks = [
+    { code: "CS101", name: "Intro to Algorithms", available: 5 },
+    { code: "CS102", name: "Data Structures", available: 3 },
+    { code: "EC101", name: "Digital Electronics", available: 2 }
+  ];
+
+  const students = [
+    { id: "b123066", name: "Kau", branch: "CSE" },
+    { id: "b123074", name: "Mrutyu", branch: "ECE" },
+    { id: "b123048", name: "Sweta", branch: "CSE" }
+  ];
+
+  const issuedBooks = [
+    { studentId: "b123066", bookCode: "CS101", bookName: "Intro to Algorithms", issueDate: "2024-03-15" },
+    { studentId: "b123066", bookCode: "CS102", bookName: "Data Structures", issueDate: "2024-03-10" },
+    { studentId: "b123074", bookCode: "EC101", bookName: "Digital Electronics", issueDate: "2024-03-12" }
+  ];
+
+  function showStatus(message, isSuccess) {
+    issueStatus.innerHTML = `
+      <div class="status-message ${isSuccess ? 'success' : 'error'}">
+        <i class="fas fa-${isSuccess ? 'check-circle' : 'exclamation-circle'}"></i>
+        <p>${message}</p>
+      </div>
+    `;
+  }
+
+  function showStudentDetails(studentId) {
+    const normalizedId = studentId.toLowerCase();
+    const student = students.find(s => s.id.toLowerCase() === normalizedId);
+    if (!student) {
+      showStatus("Invalid Student ID", false);
+      studentDetails.innerHTML = '';
+      return;
+    }
+
+    const studentBooks = issuedBooks.filter(
+      book => book.studentId.toLowerCase() === normalizedId
+    );
+
+    studentDetails.innerHTML = `
+      <div class="student-card">
+        <div class="student-info">
+          <h3><i class="fas fa-user-graduate"></i> Student Information</h3>
+          <div class="info-grid">
+            <div class="info-item"><span class="label">Name:</span><span class="value">${student.name}</span></div>
+            <div class="info-item"><span class="label">ID:</span><span class="value">${student.id}</span></div>
+            <div class="info-item"><span class="label">Branch:</span><span class="value">${student.branch}</span></div>
+          </div>
+        </div>
+        <div class="issued-books">
+          <h3><i class="fas fa-book"></i> Currently Issued Books</h3>
+          ${studentBooks.length > 0 ? `
+            <div class="books-table">
+              <table>
+                <thead><tr><th>Book Code</th><th>Book Name</th><th>Issue Date</th></tr></thead>
+                <tbody>${studentBooks.map(book => `
+                  <tr><td>${book.bookCode}</td><td>${book.bookName}</td><td>${book.issueDate}</td></tr>
+                `).join('')}</tbody>
+              </table>
+            </div>` : `<div class="no-books"><i class="fas fa-book"></i><p>No books currently issued</p></div>`}
+        </div>
+        <button class="issue-book-btn" onclick="openIssueModal()"><i class="fas fa-plus-circle"></i> Issue New Book</button>
+      </div>
+    `;
+  }
+
+  function openIssueModal() {
+    issueBookModal.style.display = "flex";
+    bookCodeInput.focus();
+  }
+
+  function validateAndIssue() {
+    const studentId = studentIdInput.value.trim();
+    const bookCode = bookCodeInput.value.trim();
+    const student = students.find(s => s.id.toLowerCase() === studentId.toLowerCase());
+    const book = availableBooks.find(b => b.code.toLowerCase() === bookCode.toLowerCase());
+
+    if (!bookCode) return showStatus("Please enter a book code", false);
+    if (!book) return showStatus("Invalid Book Code", false);
+    if (book.available <= 0) return showStatus("Book is not available", false);
+
+    showStatus(`Book "${book.name}" issued to ${student.name}`, true);
+    bookCodeInput.value = "";
+    issueBookModal.style.display = "none";
+    showStudentDetails(studentId);
+  }
+
+  menuToggle.addEventListener("click", () => sidebar.classList.toggle("show"));
+
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+      sidebar.classList.remove("show");
+    }
+  });
+
+  searchBtn.addEventListener("click", () => showStudentDetails(studentIdInput.value.trim()));
+  studentIdInput.addEventListener("keypress", e => e.key === "Enter" && showStudentDetails(studentIdInput.value.trim()));
+  bookCodeInput.addEventListener("keypress", e => e.key === "Enter" && validateAndIssue());
+  issueBtn.addEventListener("click", validateAndIssue);
+  closeIssueModal.onclick = () => issueBookModal.style.display = "none";
+  window.onclick = e => e.target == issueBookModal && (issueBookModal.style.display = "none");
+</script>
+
+</body>
+</html>
