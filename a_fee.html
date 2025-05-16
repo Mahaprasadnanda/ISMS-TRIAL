@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Student Fee Ledger</title>
+    <link rel="stylesheet" href="a_fee.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header class="mobile-header">
+    <button id="menuToggle"><i class="fas fa-bars"></i></button>
+    <h2>Student Fee Ledger</h2>
+</header>
+
+<div class="container">
+    <aside class="sidebar" id="sidebar">
+        <a href="d_home.html" class="back-btn-sidebar">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+        <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+        <button class="side-btn"><i class="fas fa-file-invoice-dollar"></i> Fee Ledger</button>
+        <button class="side-btn"><i class="fas fa-exclamation-circle"></i> Outstanding Amount</button>
+        <button class="side-btn"><i class="fas fa-calendar-alt"></i> Timetable</button>
+
+        <div class="logo-container">
+            <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+            <p class="footer-text">IIIT Student Management System</p>
+            <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header-line">
+            <h1><i class="fas fa-user-graduate"></i> Student Fee Ledger</h1>
+            <hr />
+        </div>
+        <div class="fee-ledger-content">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="programmeSelect">Programme:</label>
+                    <select id="programmeSelect" name="programmeSelect" class="modern-select">
+                        <option value="" disabled selected>Select Programme</option>
+                        <option value="btech">B.Tech</option>
+                        <option value="mtech">M.Tech</option>
+                        <option value="phd">PhD</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="branchSelect">Branch:</label>
+                    <select id="branchSelect" name="branchSelect" class="modern-select">
+                        <option value="" disabled selected>Select Branch</option>
+                        <option value="cse">CSE</option>
+                        <option value="ce">CE</option>
+                        <option value="it">IT</option>
+                        <option value="eee">EEE</option>
+                        <option value="etc">ETC</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="semesterSelect">Semester:</label>
+                    <select id="semesterSelect" name="semesterSelect" class="modern-select">
+                        <option value="" disabled selected>Select Semester</option>
+                        <option value="1">1st Semester</option>
+                        <option value="2">2nd Semester</option>
+                        <option value="3">3rd Semester</option>
+                        <option value="4">4th Semester</option>
+                        <option value="5">5th Semester</option>
+                        <option value="6">6th Semester</option>
+                        <option value="7">7th Semester</option>
+                        <option value="8">8th Semester</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="hostelSelectTop">Hostel Residency:</label>
+                    <select id="hostelSelectTop" name="hostelSelectTop" class="modern-select">
+                        <option value="" disabled selected>Select Hostel</option>
+                        <option value="old-hostel">Old Hostel</option>
+                        <option value="new-hostel">New Hostel</option>
+                    </select>
+                </div>
+                <div class="excel-upload-section">
+                    <button class="upload-excel-btn" onclick="uploadExcel()">
+                        <i class="fas fa-file-excel"></i> Upload Excel File
+                    </button>
+                </div>
+            </div>
+
+            <div class="hostel-upload-card">
+                <div class="form-group">
+                    <label for="hostelSelect">Hostel Residency:</label>
+                    <select id="hostelSelect" name="hostelSelect" class="modern-select">
+                        <option value="" disabled selected>Select Hostel</option>
+                        <option value="old-hostel">Old Hostel</option>
+                        <option value="new-hostel">New Hostel</option>
+                    </select>
+                </div>
+                <div class="excel-upload-section">
+                    <button class="upload-excel-btn" onclick="uploadExcel()">
+                        <i class="fas fa-file-excel"></i> Upload Excel File
+                    </button>
+                </div>
+            </div>
+
+            <div id="uploadMessage"></div>
+        </div>
+    </main>
+</div>
+
+<script>
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("sidebar");
+    const hostelSelect = document.getElementById("hostelSelect");
+    const uploadMessage = document.getElementById("uploadMessage");
+
+    menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("show");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove("show");
+            }
+        }
+    });
+
+    function uploadExcel() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.xlsx, .xls';
+        
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+                uploadMessage.innerHTML = '<p class="error-message"><i class="fas fa-exclamation-circle"></i> Please upload a valid Excel file (.xlsx or .xls).</p>';
+                return;
+            }
+
+            uploadMessage.innerHTML = `<p class="success-message"><i class="fas fa-check-circle"></i> Excel file uploaded successfully: ${file.name}</p>`;
+        };
+
+        input.click();
+    }
+</script>
+
+</body>
+</html>

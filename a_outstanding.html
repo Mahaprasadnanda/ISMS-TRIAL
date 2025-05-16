@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Outstanding Amount</title>
+  <link rel="stylesheet" href="a_outstanding.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header class="mobile-header">
+  <button id="menuToggle"><i class="fas fa-bars"></i></button>
+  <h2>Outstanding Amount</h2>
+</header>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <a href="d_home.html" class="back-btn-sidebar">
+      <i class="fas fa-arrow-left"></i>
+      Back to Dashboard
+    </a>
+    <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+   
+    <button class="side-btn"><i class="fas fa-exclamation-circle"></i> Outstanding Amount</button>
+    <button class="side-btn"><i class="fas fa-calendar-alt"></i> Timetable</button>
+    <button class="side-btn"><i class="fas fa-address-book"></i> Student FeeLedger</button>
+
+    <div class="logo-container">
+      <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+      <p class="footer-text">IIIT Student Management System</p>
+      <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header-line">
+      <h1><i class="fas fa-exclamation-circle"></i> Outstanding Amount</h1>
+      <hr />
+    </div>
+
+    <div class="modern-card">
+      <h3 class="modern-card-title"><i class="fas fa-search"></i> Search Student</h3>
+      <div class="search-container">
+        <div class="search-bar-container">
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="studentIdInput" placeholder="Enter Student ID..." />
+          </div>
+          <button id="searchBtn" class="modern-btn"><i class="fas fa-search"></i> Search</button>
+        </div>
+      </div>
+
+      <div class="student-details" id="studentDetails" style="display: none;">
+        <div class="student-photo">
+          <img src="https://via.placeholder.com/120" alt="Student Photo" id="studentPhoto" />
+        </div>
+        <div class="student-info">
+          <h3 id="studentName">John Doe</h3>
+          <div class="info-grid">
+            <p><i class="fas fa-id-card"></i> <strong>ID:</strong> <span id="studentId">ST12345</span></p>
+            <p><i class="fas fa-graduation-cap"></i> <strong>Program:</strong> <span id="studentProgram">B.Tech</span></p>
+            <p><i class="fas fa-code-branch"></i> <strong>Branch:</strong> <span id="studentBranch">Computer Science</span></p>
+            <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="studentEmail">john.doe@example.com</span></p>
+            <p><i class="fas fa-money-bill-wave"></i> <strong>Outstanding Amount:</strong> ₹<span id="currentAmount">5000</span></p>
+          </div>
+          <button id="updateAmountBtn" class="modern-btn"><i class="fas fa-edit"></i> Update Amount</button>
+        </div>
+      </div>
+
+      <div class="update-form-container" id="updateFormContainer" style="display: none;">
+        <div class="update-form">
+          <button id="closeFormBtn" class="close-btn"><i class="fas fa-times"></i></button>
+          <h3><i class="fas fa-money-bill-wave"></i> Set New Outstanding Amount</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="newAmount">New Outstanding Amount (₹):</label>
+              <input type="number" id="newAmount" placeholder="Enter new amount..." min="0" />
+            </div>
+            <button id="submitAmountBtn" class="modern-btn"><i class="fas fa-check"></i> Submit</button>
+          </div>
+          <div id="amountSuccessMsg" class="success-msg" style="display: none;">Outstanding amount updated successfully!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modern-card">
+      <h3 class="modern-card-title"><i class="fas fa-file-excel"></i> Upload Outstanding Amounts via Excel</h3>
+      <div class="excel-upload-form">
+        <div class="upload-bar-container">
+          <div class="upload-bar">
+            <input type="file" id="excelFile" accept=".xlsx, .xls" />
+          </div>
+          <button id="uploadExcelBtn" class="modern-btn"><i class="fas fa-upload"></i> Upload</button>
+        </div>
+        <div id="excelSuccessMsg" class="success-msg" style="display: none;">Excel file uploaded successfully!</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("show");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768) {
+      if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        sidebar.classList.remove("show");
+      }
+    }
+  });
+
+  // Mock student data (in a real scenario, this would come from a backend)
+  const mockStudents = {
+    "ST12345": {
+      name: "John Doe",
+      id: "ST12345",
+      program: "B.Tech",
+      branch: "Computer Science",
+      email: "B123066@iiit-bh.ac.in",
+      photo: "https://via.placeholder.com/120",
+      amount: 5000
+    },
+    "ST67890": {
+      name: "Jane Smith",
+      id: "ST67890",
+      program: "M.Tech",
+      branch: "Electronics",
+      email: "jane.smith@example.com",
+      photo: "https://via.placeholder.com/120",
+      amount: 3000
+    }
+  };
+
+  // Search Functionality
+  const searchBtn = document.getElementById("searchBtn");
+  const studentIdInput = document.getElementById("studentIdInput");
+  const studentDetails = document.getElementById("studentDetails");
+  const studentPhoto = document.getElementById("studentPhoto");
+  const studentName = document.getElementById("studentName");
+  const studentId = document.getElementById("studentId");
+  const studentProgram = document.getElementById("studentProgram");
+  const studentBranch = document.getElementById("studentBranch");
+  const studentEmail = document.getElementById("studentEmail");
+  const currentAmount = document.getElementById("currentAmount");
+
+  searchBtn.addEventListener("click", () => {
+    const id = studentIdInput.value.trim().toUpperCase();
+    if (mockStudents[id]) {
+      const student = mockStudents[id];
+      studentPhoto.src = student.photo;
+      studentName.textContent = student.name;
+      studentId.textContent = student.id;
+      studentProgram.textContent = student.program;
+      studentBranch.textContent = student.branch;
+      studentEmail.textContent = student.email;
+      currentAmount.textContent = student.amount;
+      studentDetails.style.display = "flex";
+    } else {
+      alert("Student not found!");
+      studentDetails.style.display = "none";
+    }
+  });
+
+  // Update Amount Functionality with Animation
+  const updateAmountBtn = document.getElementById("updateAmountBtn");
+  const updateFormContainer = document.getElementById("updateFormContainer");
+  const updateForm = document.querySelector(".update-form");
+  const submitAmountBtn = document.getElementById("submitAmountBtn");
+  const closeFormBtn = document.getElementById("closeFormBtn");
+  const newAmountInput = document.getElementById("newAmount");
+  const amountSuccessMsg = document.getElementById("amountSuccessMsg");
+
+  updateAmountBtn.addEventListener("click", () => {
+    updateFormContainer.style.display = "flex";
+    updateForm.classList.remove("zoom-out");
+    updateForm.classList.add("zoom-in");
+  });
+
+  submitAmountBtn.addEventListener("click", () => {
+    const newAmount = parseFloat(newAmountInput.value);
+    if (!isNaN(newAmount) && newAmount >= 0) {
+      const id = studentIdInput.value.trim().toUpperCase();
+      if (mockStudents[id]) {
+        mockStudents[id].amount = newAmount;
+        currentAmount.textContent = newAmount;
+        updateForm.classList.remove("zoom-in");
+        updateForm.classList.add("zoom-out");
+        setTimeout(() => {
+          updateFormContainer.style.display = "none";
+          updateForm.classList.remove("zoom-out"); // Reset animation state
+          amountSuccessMsg.style.display = "block";
+          setTimeout(() => {
+            amountSuccessMsg.style.display = "none";
+            newAmountInput.value = "";
+          }, 2000);
+        }, 300);
+      }
+    } else {
+      alert("Please enter a valid amount!");
+    }
+  });
+
+  closeFormBtn.addEventListener("click", () => {
+    updateForm.classList.remove("zoom-in");
+    updateForm.classList.add("zoom-out");
+    setTimeout(() => {
+      updateFormContainer.style.display = "none";
+      updateForm.classList.remove("zoom-out"); // Reset animation state
+      newAmountInput.value = "";
+    }, 300);
+  });
+
+  // Excel Upload Functionality
+  const uploadExcelBtn = document.getElementById("uploadExcelBtn");
+  const excelFileInput = document.getElementById("excelFile");
+  const excelSuccessMsg = document.getElementById("excelSuccessMsg");
+
+  uploadExcelBtn.addEventListener("click", () => {
+    if (excelFileInput.files.length > 0) {
+      excelSuccessMsg.style.display = "block";
+      setTimeout(() => {
+        excelSuccessMsg.style.display = "none";
+        excelFileInput.value = "";
+      }, 2000);
+    } else {
+      alert("Please select an Excel file to upload!");
+    }
+  });
+</script>
+
+</body>
+</html>
