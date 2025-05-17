@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grievance Management - IIIT Bhubaneswar</title>
+  <link rel="stylesheet" href="f_grievance.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header class="mobile-header">
+  <button id="menuToggle"><i class="fas fa-bars"></i></button>
+  <h2>Grievance Management</h2>
+</header>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <a href="d_home.html" class="back-btn-sidebar">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+    <button class="side-btn"><i class="fas fa-user-graduate"></i> Student Details</button>
+    <button class="side-btn"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</button>
+    <button class="side-btn"><i class="fas fa-calendar-alt"></i> Timetable</button>
+    <button class="side-btn active"><i class="fas fa-comment-alt"></i> Grievance</button>
+    <button class="side-btn"><i class="fas fa-chalkboard-teacher"></i> Teaching Currently</button>
+
+    <div class="logo-container">
+      <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+      <p class="footer-text">IIIT Student Management System</p>
+      <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header-line">
+      <h1><i class="fas fa-comment-alt"></i> Grievance Management</h1>
+      <hr />
+    </div>
+
+    <div class="grievance-section">
+      <div class="search-container">
+        <div class="status-filter-wrapper">
+          <select id="searchStatus">
+            <option value="">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Resolved">Resolved</option>
+            <option value="In Progress">In Progress</option>
+          </select>
+          <button onclick="searchGrievance()">Search</button>
+        </div>
+      </div>
+
+      <div class="grievance-list" id="grievanceList">
+        <!-- Grievance items will be added here dynamically -->
+      </div>
+      <p id="noGrievanceMessage">No grievances found.</p>
+    </div>
+  </main>
+</div>
+
+<div class="popup-overlay" id="popupOverlay"></div>
+<div class="grievance-popup" id="grievancePopup">
+  <div class="popup-header">
+    <h3 id="popupTitle">Grievance Details</h3>
+    <span class="status-badge" id="popupStatus">Pending</span>
+  </div>
+  <div class="grievance-info-grid">
+    <div class="info-row">
+      <span class="label">Grievance ID</span>
+      <span class="value" id="popupID"></span>
+    </div>
+    <div class="info-row">
+      <span class="label">From</span>
+      <span class="value" id="popupFrom"></span>
+    </div>
+    <div class="info-row">
+      <span class="label">To</span>
+      <span class="value" id="popupTo"></span>
+    </div>
+    <div class="info-row" id="forwardedFromRow" style="display: none;">
+      <span class="label">Forwarded From</span>
+      <span class="value" id="popupForwardedFrom"></span>
+    </div>
+    <div class="info-row" id="forwardingChainRow" style="display: none;">
+      <span class="label">Forwarding Chain</span>
+      <div class="forwarding-chain" id="forwardingChain">
+        <!-- Forwarding chain will be populated here -->
+      </div>
+    </div>
+    <div class="info-row">
+      <span class="label">Date & Time</span>
+      <span class="value" id="popupDateTime"></span>
+    </div>
+    <div class="info-row full-width">
+      <span class="label">Subject</span>
+      <span class="value" id="popupSubject"></span>
+    </div>
+    <div class="info-row full-width">
+      <span class="label">Description</span>
+      <span class="value" id="popupDescription"></span>
+    </div>
+    <div class="info-row full-width" id="resolutionRow">
+      <span class="label">Resolution</span>
+      <textarea id="resolutionText" placeholder="Enter resolution details..."></textarea>
+    </div>
+    <div class="info-row full-width" id="forwardChainActionRow">
+      <div class="forward-chain-action" id="forwardChainAction">
+        <button class="forward-chain-btn" id="forwardChainBtn">
+          Forward To <span class="dropdown-arrow">▼</span>
+        </button>
+        <div class="forward-chain-dropdown" id="forwardChainDropdown">
+          <div class="dropdown-option" data-value="director">Director</div>
+          <div class="dropdown-option" data-value="dean">Dean</div>
+          <div class="dropdown-option" data-value="hod">Head of Department</div>
+        </div>
+        <div class="forward-reason-section" id="forwardReasonSection" style="display:none;">
+          <textarea id="forwardChainReason" placeholder="Reason for forwarding..." class="forward-reason"></textarea>
+          <button class="forward-btn" id="forwardChainConfirmBtn">Confirm Forward</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="popup-actions">
+    <button class="close-btn-red" onclick="closePopup()">Close</button>
+    <button class="resolve-btn" onclick="resolveGrievance()">Resolve</button>
+  </div>
+</div>
+
+<script>
+const grievanceList = [
+    {
+        id: "G1001",
+        from: "Student - S2001",
+        to: "Director",
+        dateTime: "2024-03-15 14:30",
+        subject: "Request for Additional Study Materials",
+        description: "I would like to request additional study materials for the Advanced Algorithms course. The current materials are not sufficient for understanding complex topics.",
+        status: "Pending",
+        forwardingChain: []
+    },
+    {
+        id: "G1002",
+        from: "Faculty - F1001",
+        to: "Admin",
+        dateTime: "2024-03-14 10:15",
+        subject: "Classroom Equipment Issue",
+        description: "The projector in Room 302 is not working properly. It needs immediate attention as it affects the teaching process.",
+        status: "In Progress",
+        forwardingChain: [
+            {
+                from: "Faculty - F1001",
+                to: "Admin",
+                reason: "Issue could not be resolved at faculty level, needs admin intervention.",
+                timestamp: "2024-03-14T10:20:00"
+            },
+            {
+                from: "Admin",
+                to: "Director",
+                reason: "Admin approval required for equipment replacement.",
+                timestamp: "2024-03-14T11:00:00"
+            }
+        ]
+    },
+    {
+        id: "G1003",
+        from: "Student - S2002",
+        to: "Faculty - F1002",
+        dateTime: "2024-03-13 16:45",
+        subject: "Assignment Deadline Extension",
+        description: "Due to technical issues with my laptop, I request an extension for the Data Structures assignment deadline.",
+        status: "Resolved",
+        forwardingChain: [
+            {
+                from: "Student - S2002",
+                to: "Faculty - F1002",
+                reason: "Initial request for extension.",
+                timestamp: "2024-03-13T16:45:00"
+            },
+            {
+                from: "Faculty - F1002",
+                to: "Dean",
+                reason: "Faculty recommends extension due to valid reason.",
+                timestamp: "2024-03-13T17:00:00"
+            }
+        ]
+    }
+];
+
+const searchGrievance = () => {
+    const status = document.getElementById("searchStatus").value;
+
+    const listEl = document.getElementById("grievanceList");
+    const noMsg = document.getElementById("noGrievanceMessage");
+    listEl.innerHTML = "";
+
+    const result = grievanceList.filter(g =>
+        status === "" || g.status === status
+    );
+
+    if (result.length === 0) {
+        noMsg.style.display = "block";
+    } else {
+        noMsg.style.display = "none";
+        result.forEach(grievance => {
+            const div = document.createElement("div");
+            div.className = "grievance-item";
+            div.innerHTML = `
+                <span class="grievance-id">${grievance.id}</span>
+                <div class="grievance-content">
+                    <div class="grievance-subject">${grievance.subject}</div>
+                    <div class="grievance-meta">
+                        <span>${grievance.from}</span>
+                        ${grievance.forwardedFrom ? `<span class="forwarded-from">Forwarded from: ${grievance.forwardedFrom}</span>` : ''}
+                        <span>${grievance.dateTime}</span>
+                    </div>
+                </div>
+                <span class="status-badge status-${(grievance.status === 'Forwarded' ? 'progress' : grievance.status.toLowerCase().replace(' ', '-'))}">${grievance.status === 'Forwarded' ? 'In Progress' : grievance.status}</span>
+            `;
+            div.onclick = () => showGrievanceDetails(grievance);
+            listEl.appendChild(div);
+        });
+    }
+};
+
+const showGrievanceDetails = (grievance) => {
+    document.getElementById("popupTitle").innerText = grievance.subject;
+    document.getElementById("popupID").innerText = grievance.id;
+    document.getElementById("popupFrom").innerText = grievance.from;
+    document.getElementById("popupTo").innerText = grievance.to;
+
+    // Handle forwarded from display
+    const forwardedFromRow = document.getElementById("forwardedFromRow");
+    const popupForwardedFrom = document.getElementById("popupForwardedFrom");
+    const forwardingChainRow = document.getElementById("forwardingChainRow");
+    const forwardingChain = document.getElementById("forwardingChain");
+
+    if (grievance.forwardedFrom) {
+        forwardedFromRow.style.display = "grid";
+        popupForwardedFrom.innerText = grievance.forwardedFrom;
+    } else {
+        forwardedFromRow.style.display = "none";
+    }
+
+    // Display forwarding chain
+    if (grievance.forwardingChain && grievance.forwardingChain.length > 0) {
+        forwardingChainRow.style.display = "grid";
+        forwardingChain.innerHTML = grievance.forwardingChain.map(forward => `
+            <div class="forwarding-chain-item">
+                <div class="forward-details">
+                    <div>
+                        <span class="forward-from">${forward.from}</span>
+                        <span class="forward-arrow">→</span>
+                        <span class="forward-to">${forward.to}</span>
+                    </div>
+                    <div class="forward-time">${new Date(forward.timestamp).toLocaleString()}</div>
+                    <div class="forward-reason">${forward.reason}</div>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        forwardingChainRow.style.display = "grid";
+        forwardingChain.innerHTML = '';
+    }
+
+    // Setup new forward chain UI
+    setupForwardChainUI(grievance);
+
+    document.getElementById("popupDateTime").innerText = grievance.dateTime;
+    document.getElementById("popupSubject").innerText = grievance.subject;
+    document.getElementById("popupDescription").innerText = grievance.description;
+    document.getElementById("popupStatus").innerText = grievance.status === 'Forwarded' ? 'In Progress' : grievance.status;
+    document.getElementById("popupStatus").className = `status-badge status-${(grievance.status === 'Forwarded' ? 'progress' : grievance.status.toLowerCase().replace(' ', '-'))}`;
+
+    const resolutionRow = document.getElementById("resolutionRow");
+    const resolutionText = document.getElementById("resolutionText");
+    const resolveBtn = document.querySelector(".resolve-btn");
+    const forwardChainBtn = document.getElementById("forwardChainBtn");
+    if (grievance.status === "Resolved") {
+        resolutionRow.style.display = "grid";
+        resolutionText.value = grievance.resolution || "";
+        resolutionText.disabled = true;
+        resolveBtn.style.display = "none";
+        forwardChainBtn.style.display = "none";
+    } else {
+        resolutionRow.style.display = "grid";
+        resolutionText.value = "";
+        resolutionText.disabled = false;
+        resolveBtn.style.display = "block";
+        forwardChainBtn.style.display = "inline-flex";
+    }
+
+    document.getElementById("grievancePopup").style.display = "flex";
+    document.getElementById("popupOverlay").style.display = "block";
+};
+
+const resolveGrievance = () => {
+    const resolution = document.getElementById("resolutionText").value.trim();
+    if (!resolution) {
+        alert("Please enter resolution details before resolving the grievance.");
+        return;
+    }
+
+    const id = document.getElementById("popupID").innerText;
+    const grievance = grievanceList.find(g => g.id === id);
+    if (grievance) {
+        grievance.status = "Resolved";
+        grievance.resolution = resolution;
+        closePopup();
+        searchGrievance(); // Refresh the list
+    }
+};
+
+const closePopup = () => {
+    document.getElementById("grievancePopup").style.display = "none";
+    document.getElementById("popupOverlay").style.display = "none";
+};
+
+// Add event listeners for the new forward chain button and dropdown
+function setupForwardChainUI(grievance) {
+    const forwardChainBtn = document.getElementById("forwardChainBtn");
+    const forwardChainDropdown = document.getElementById("forwardChainDropdown");
+    const forwardReasonSection = document.getElementById("forwardReasonSection");
+    const forwardChainReason = document.getElementById("forwardChainReason");
+    const forwardChainConfirmBtn = document.getElementById("forwardChainConfirmBtn");
+    let selectedForwardTarget = null;
+
+    // Toggle dropdown
+    forwardChainBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        forwardChainDropdown.style.display = 
+            forwardChainDropdown.style.display === "block" ? "none" : "block";
+    });
+
+    // Handle dropdown item selection
+    document.querySelectorAll(".dropdown-option").forEach(option => {
+        option.addEventListener("click", (e) => {
+            e.stopPropagation();
+            selectedForwardTarget = option.getAttribute("data-value");
+            forwardChainBtn.innerHTML = `Forward To: ${option.textContent} <span class="dropdown-arrow">▼</span>`;
+            forwardChainDropdown.style.display = "none";
+            forwardReasonSection.style.display = "flex";
+            forwardChainReason.focus();
+        });
+    });
+
+    // Handle confirm forward
+    forwardChainConfirmBtn.addEventListener("click", () => {
+        const reason = forwardChainReason.value.trim();
+        if (!reason) {
+            alert("Please provide a reason for forwarding.");
+            return;
+        }
+
+        // Add to forwarding chain
+        const forwardEntry = {
+            from: grievance.to,
+            to: selectedForwardTarget.charAt(0).toUpperCase() + selectedForwardTarget.slice(1), // Capitalize first letter
+            reason: reason,
+            timestamp: new Date().toISOString()
+        };
+
+        addToForwardingHistory(forwardEntry);
+
+        // Update grievance status
+        updateGrievanceStatus(grievance.id, "Forwarded");
+
+        // Reset UI
+        forwardReasonSection.style.display = "none";
+        forwardChainReason.value = "";
+        forwardChainBtn.innerHTML = 'Forward To <span class="dropdown-arrow">▼</span>';
+        
+        // Close popup and refresh list
+        closePopup();
+        searchGrievance();
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".forward-chain-action")) {
+            forwardChainDropdown.style.display = "none";
+        }
+    });
+}
+
+function addToForwardingHistory(forwardEntry) {
+    // Find the grievance in the list and add the forwarding entry
+    const grievance = grievanceList.find(g => g.id === document.getElementById("popupID").innerText);
+    if (grievance) {
+        if (!grievance.forwardingChain) {
+            grievance.forwardingChain = [];
+        }
+        grievance.forwardingChain.push(forwardEntry);
+        grievance.forwardedFrom = forwardEntry.from; // Update the forwarded from field
+    }
+}
+
+function updateGrievanceStatus(grievanceId, newStatus) {
+    const grievance = grievanceList.find(g => g.id === grievanceId);
+    if (grievance) {
+        grievance.status = newStatus;
+        // If resolved, update the resolution text
+        if (newStatus === "Resolved") {
+            const resolutionText = document.getElementById("resolutionText").value.trim();
+            if (resolutionText) {
+                grievance.resolution = resolutionText;
+            }
+        }
+    }
+}
+
+// Modify the existing openPopup function to show forwarding history
+function openPopup(grievance) {
+    // Show the popup with grievance details
+    document.getElementById("popupTitle").innerText = grievance.subject;
+    document.getElementById("popupID").innerText = grievance.id;
+    document.getElementById("popupFrom").innerText = grievance.from;
+    document.getElementById("popupTo").innerText = grievance.to;
+    document.getElementById("popupDateTime").innerText = grievance.dateTime;
+    document.getElementById("popupSubject").innerText = grievance.subject;
+    document.getElementById("popupDescription").innerText = grievance.description;
+    document.getElementById("popupStatus").innerText = grievance.status === 'Forwarded' ? 'In Progress' : grievance.status;
+    document.getElementById("popupStatus").className = `status-badge status-${(grievance.status === 'Forwarded' ? 'progress' : grievance.status.toLowerCase().replace(' ', '-'))}`;
+    
+    // Show the popup
+    document.getElementById("popupOverlay").style.display = "block";
+    document.getElementById("grievancePopup").style.display = "block";
+}
+
+// Utility function to remove the last forward chain entry for a grievance
+function removeLastForwardChain(grievance) {
+    if (grievance.forwardingChain && grievance.forwardingChain.length > 0) {
+        // Remove the last entry
+        grievance.forwardingChain.pop();
+        
+        // If no more forwarding entries, remove the forwardingChain array
+        if (grievance.forwardingChain.length === 0) {
+            delete grievance.forwardingChain;
+        } else {
+            // Update the forwardedFrom to the previous entry's from
+            grievance.forwardedFrom = grievance.forwardingChain[grievance.forwardingChain.length - 1].from;
+        }
+    }
+}
+
+// Remove last forward chain from G1002 as an example
+const g1002 = grievanceList.find(g => g.id === "G1002");
+if (g1002) {
+    removeLastForwardChain(g1002);
+}
+
+document.getElementById("menuToggle").addEventListener("click", () => {
+    document.getElementById("sidebar").classList.toggle("show");
+});
+
+document.addEventListener("click", (e) => {
+    const sidebar = document.getElementById("sidebar");
+    const toggle = document.getElementById("menuToggle");
+    if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+        sidebar.classList.remove("show");
+    }
+});
+
+// Initial load
+searchGrievance();
+</script>
+</body>
+</html>
