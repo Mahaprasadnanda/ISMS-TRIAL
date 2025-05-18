@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="s_notice.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="portal-title">
+            <img src="IIIT%20LOGO%203.svg" alt="IIIT Logo" class="logo">
+            <span>Student Portal</span>
+        </div>
+        <div class="top-buttons">
+            <a href="#logout" class="top-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#faculty"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</a></li>
+                <li><a href="#student"><i class="fas fa-user-graduate"></i> Student Details</a></li>
+                <li><a href="#notice"><i class="fas fa-bullhorn"></i> Notice Board</a></li>
+                <li><a href="#timetable"><i class="fas fa-clock"></i> Timetable</a></li>
+                <li><a href="#grievance"><i class="fas fa-comment-alt"></i> Grievance</a></li>
+                <li><a href="#classes"><i class="fas fa-book"></i> Classes</a></li>
+                <li><a href="#grades"><i class="fas fa-chart-bar"></i> Grades</a></li>
+                <li><a href="#books"><i class="fas fa-book-open"></i> Books</a></li>
+                <li><a href="#outstanding"><i class="fas fa-money-bill-wave"></i> Outstanding</a></li>
+                <li><a href="#fee"><i class="fas fa-file-invoice-dollar"></i> Fee Ledger</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="header-line">
+            <div class="header-content">
+                <h1><i class="fas fa-bullhorn"></i> Notice Board</h1>
+            </div>
+            <hr />
+        </div>
+        <div class="notice-section">
+            <div class="notice-list" id="noticeList">
+                <!-- Notice items will be added here dynamically -->
+            </div>
+            <p id="noNoticeMessage">No notices found.</p>
+        </div>
+    </main>
+
+    <div class="popup-overlay" id="noticePopupOverlay"></div>
+
+    <div class="notice-details-popup" id="noticeDetailsPopup">
+        <div class="popup-header">
+            <h3 id="noticePopupTitle">Notice Details</h3>
+            <button id="closeNoticeDetailsBtn" class="close-btn-red">Close</button>
+        </div>
+        <div class="notice-info-grid">
+            <div class="info-row">
+                <span class="label">Notice ID</span>
+                <span class="value" id="noticePopupID"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Date & Time</span>
+                <span class="value" id="noticePopupDateTime"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Attention</span>
+                <span class="value" id="noticePopupAttention"></span>
+            </div>
+            <div class="info-row full-width">
+                <span class="label">Title</span>
+                <span class="value" id="noticePopupTitle"></span>
+            </div>
+            <div class="info-row full-width">
+                <span class="label">Content</span>
+                <span class="value" id="noticePopupContent"></span>
+            </div>
+            <div class="info-row full-width" id="noticeDocumentRow">
+                <span class="label">Attached Document</span>
+                <span class="value" id="noticePopupDocument"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Notice Board Data
+        const noticeList = [
+            {
+                id: "N1001",
+                title: "Welcome to the New Academic Year",
+                content: "We are excited to welcome all students to the new academic year. Please ensure you have completed your registration process.",
+                dateTime: "2024-03-15 14:30",
+                attention: "All Students",
+                from: "Director",
+                postedBy: "admin"
+            },
+            {
+                id: "N1002",
+                title: "Holiday Notice",
+                content: "The institute will remaiddsaadfafdakfmdnkfnjndjjkdjdlajdjljdjdjkdjjdjdljaljdklajdjjasdjajdjdjadjajdlkajdsddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddremaiddsaadfafdakfmdnkfnjndjjkdjdlajdjljdjdjkdjjdjdljaljdklajdjjasdjajdjdjadjajdlkajdsddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddfddsfsdfdsfsdfsjnadjkabdbjbnhjdkashnbdbdhjnadhahndhdkhakdaddmawndklnadnndjnjndjnasjdjklajdljaldjajsdljaldjajsdjajdjasdjasjdajdjaldjkajdljdjdljasdjasdjajdjadjnaljdjildjnjwjawjdilajdljnljshdhdhassdhjkjahdhkjhdkahdkahsdjkhakshdhkahsdkhbnnddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddfddsfsdfdsfsdfsjnadjkabdbjbnhjdkashnbdbdhjnadhahndhdkhakdaddmawndklnadnndjnjndjnasjdjklajdljaldjajsdljaldjajsdjajdjasdjasjdajdjaldjkajdljdjdljasdjasdjajdjadjnaljdjildjnjwjawjdilajdljnljshdhdhassdhjkjahdhkjhdkahdkahsdjkhakshdhkahsdkhbnn closed on March 20, 2024, due to a public holiday.",
+                dateTime: "2024-03-14 10:15",
+                attention: "All Students & Faculty",
+                from: "Administration",
+                postedBy: "admin"
+            },
+            {
+                id: "N1003",
+                title: "Upcoming Workshop",
+                content: "A workshop on 'Advanced Programming Techniques' will be held on March 25, 2024. All interested students are encouraged to attend.",
+                dateTime: "2024-03-13 16:45",
+                attention: "B.Tech CSE",
+                from: "CSE Department",
+                postedBy: "faculty"
+            },
+            {
+                id: "N1004",
+                title: "Sports Meet Registration",
+                content: "Annual Sports Meet registration is now open. All students are encouraged to participate in various events.",
+                dateTime: "2024-03-12 09:30",
+                attention: "All Students",
+                from: "Sports Department",
+                postedBy: "faculty"
+            }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderNotices();
+        });
+
+        // Mobile menu toggle functionality for navbar
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navbar = document.querySelector('.navbar');
+        const body = document.body;
+
+        menuToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            body.classList.toggle('menu-open');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar') && !e.target.closest('.menu-toggle')) {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            });
+        });
+
+        // Notice Board Functions
+        function renderNotices() {
+            const listEl = document.getElementById("noticeList");
+            const noMsg = document.getElementById("noNoticeMessage");
+            listEl.innerHTML = "";
+
+            if (noticeList.length === 0) {
+                noMsg.style.display = "block";
+            } else {
+                noMsg.style.display = "none";
+                noticeList.forEach(notice => {
+                    const div = document.createElement("div");
+                    div.className = "notice-item";
+                    div.innerHTML = `
+                        <div class="notice-content">
+                            <div class="notice-title">${notice.title}</div>
+                            <div class="notice-meta">
+                                <span><i class="fas fa-user"></i> By: ${notice.from}</span>
+                            </div>
+                        </div>
+                        <div class="notice-actions">
+                            <div class="notice-timestamp">
+                                <span><i class="fas fa-clock"></i> ${notice.dateTime}</span>
+                            </div>
+                        </div>
+                    `;
+                    div.onclick = () => showNoticeDetails(notice);
+                    listEl.appendChild(div);
+                });
+            }
+        }
+
+        function showNoticeDetails(notice) {
+            document.getElementById("noticePopupID").innerText = notice.id;
+            document.getElementById("noticePopupTitle").innerText = notice.title;
+            document.getElementById("noticePopupDateTime").innerText = notice.dateTime;
+            document.getElementById("noticePopupAttention").innerText = notice.attention;
+            document.getElementById("noticePopupContent").innerText = notice.content;
+
+            const documentRow = document.getElementById("noticeDocumentRow");
+            if (notice.document) {
+                documentRow.style.display = "grid";
+                document.getElementById("noticePopupDocument").innerText = notice.document;
+            } else {
+                documentRow.style.display = "none";
+            }
+
+            document.getElementById("noticeDetailsPopup").style.display = "flex";
+            document.getElementById("noticePopupOverlay").style.display = "block";
+        }
+
+        function closeNoticeDetailsPopup() {
+            document.getElementById("noticeDetailsPopup").style.display = "none";
+            document.getElementById("noticePopupOverlay").style.display = "none";
+        }
+
+        // Bind close button event listener and debug
+        const closeBtn = document.getElementById("closeNoticeDetailsBtn");
+        if (closeBtn) {
+            closeBtn.addEventListener("click", () => {
+                console.log("Close button clicked"); // Debug log
+                closeNoticeDetailsPopup();
+            });
+        } else {
+            console.error("Close button not found in DOM"); // Debug log
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="s_grievance.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="portal-title">
+            <img src="IIIT%20LOGO%203.svg" alt="IIIT Logo" class="logo">
+            <span>Student Portal</span>
+        </div>
+        <div class="top-buttons">
+            <a href="#logout" class="top-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#faculty"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</a></li>
+                <li><a href="#student"><i class="fas fa-user-graduate"></i> Student Details</a></li>
+                <li><a href="#notice"><i class="fas fa-bullhorn"></i> Notice Board</a></li>
+                <li><a href="#timetable"><i class="fas fa-clock"></i> Timetable</a></li>
+                <li><a href="#grievance"><i class="fas fa-comment-alt"></i> Grievance</a></li>
+                <li><a href="#classes"><i class="fas fa-book"></i> Classes</a></li>
+                <li><a href="#grades"><i class="fas fa-chart-bar"></i> Grades</a></li>
+                <li><a href="#books"><i class="fas fa-book-open"></i> Books</a></li>
+                <li><a href="#outstanding"><i class="fas fa-money-bill-wave"></i> Outstanding</a></li>
+                <li><a href="#fee"><i class="fas fa-file-invoice-dollar"></i> Fee Ledger</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="headline-slab">
+            <h1><i class="fas fa-comment-alt"></i> Grievance Portal</h1>
+            <hr />
+        </div>
+
+        <!-- Grievance Submission Form -->
+        <div class="grievance-form-section">
+            <div class="search-container">
+                <select id="addressedTo">
+                    <option value="" disabled selected>Select Person to Address</option>
+                    <option value="Director">Director</option>
+                    <option value="Registrar">Registrar</option>
+                    <option value="Dean of Student Affairs">Dean of Student Affairs</option>
+                    <option value="Dean of Academics">Dean of Academics</option>
+                    <option value="Dr. Smith">Dr. Smith</option>
+                    <option value="Dr. Jones">Dr. Jones</option>
+                    <option value="Dr. Brown">Dr. Brown</option>
+                </select>
+                <input type="text" id="grievanceSubject" placeholder="Enter Subject" />
+                <textarea id="grievanceDescription" placeholder="Enter Description" rows="5"></textarea>
+                <button onclick="submitGrievance()">Submit</button>
+            </div>
+        </div>
+
+        <!-- Grievance History -->
+        <div class="grievance-history-section">
+            <div class="headline-slab">
+                <h1><i class="fas fa-history"></i> Grievance History</h1>
+                <hr />
+            </div>
+            <div class="grievance-history" id="grievanceHistory">
+                <!-- Grievances will be populated here -->
+            </div>
+        </div>
+
+        <!-- Grievance Details Popup -->
+        <div class="popup-overlay" id="grievancePopupOverlay">
+            <div class="grievance-popup">
+                <h3 id="grievancePopupSubject"></h3>
+                <div class="grievance-details">
+                    <p><strong>Description:</strong> <span id="grievancePopupDescription"></span></p>
+                    <p><strong>Addressed To:</strong> <span id="grievancePopupAddressedTo"></span></p>
+                    <p><strong>Status:</strong> <span id="grievancePopupStatus" class="status-tag"></span></p>
+                </div>
+                <div class="forward-chain-section">
+                    <h4>Forward Chain & Actions</h4>
+                    <div class="forward-chain" id="forwardChain"></div>
+                </div>
+                <button class="close-btn" onclick="closeGrievancePopup()">Close</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Sample grievance data (in a real application, this would come from a backend)
+        const grievancesData = [
+            {
+                id: 1,
+                subject: "Issue with Exam Schedule",
+                description: "The exam schedule conflicts with my internship.",
+                addressedTo: "Dean of Academics",
+                status: "In Progress",
+                forwardChain: [
+                    { person: "Dean of Academics", message: "Forwarded to Registrar for review.", date: "2025-05-10", status: "In Progress" },
+                    { person: "Registrar", message: "Reviewing the schedule. Will update soon.", date: "2025-05-12", status: "In Progress" }
+                ]
+            },
+            {
+                id: 2,
+                subject: "Hostel Maintenance Request",
+                description: "The AC in my room is not working.",
+                addressedTo: "Dean of Student Affairs",
+                status: "Resolved",
+                forwardChain: [
+                    { person: "Dean of Student Affairs", message: "Forwarded to maintenance team.", date: "2025-05-05", status: "In Progress" },
+                    { person: "Maintenance Team", message: "AC repaired on May 8, 2025.", date: "2025-05-08", status: "Resolved" }
+                ]
+            },
+            {
+                id: 3,
+                subject: "Fee Payment Issue",
+                description: "Unable to pay fees due to portal error.",
+                addressedTo: "Registrar",
+                status: "Pending",
+                forwardChain: [
+                    { person: "Registrar", message: "Investigating the issue with the payment portal.", date: "2025-05-15", status: "Pending" }
+                ]
+            }
+        ];
+
+        // Populate grievance history on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            populateGrievanceHistory();
+        });
+
+        function populateGrievanceHistory() {
+            const grievanceHistory = document.getElementById('grievanceHistory');
+            grievanceHistory.innerHTML = '';
+            grievancesData.forEach(grievance => {
+                const item = document.createElement('div');
+                item.classList.add('grievance-item');
+                item.innerHTML = `
+                    <div class="grievance-summary">
+                        <p><strong>${grievance.subject}</strong></p>
+                        <p>Addressed To: ${grievance.addressedTo}</p>
+                        <span class="status-tag ${grievance.status.toLowerCase().replace(' ', '-')}">${grievance.status}</span>
+                    </div>
+                `;
+                item.addEventListener('click', () => showGrievancePopup(grievance));
+                grievanceHistory.appendChild(item);
+            });
+        }
+
+        function submitGrievance() {
+            const addressedTo = document.getElementById('addressedTo').value;
+            const subject = document.getElementById('grievanceSubject').value;
+            const description = document.getElementById('grievanceDescription').value;
+
+            if (!addressedTo || !subject || !description) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Simulate submitting a grievance (in a real app, this would be an API call)
+            const newGrievance = {
+                id: grievancesData.length + 1,
+                subject,
+                description,
+                addressedTo,
+                status: "Pending",
+                forwardChain: [
+                    { person: addressedTo, message: "Grievance received. Under review.", date: "2025-05-18", status: "Pending" }
+                ]
+            };
+
+            grievancesData.push(newGrievance);
+            populateGrievanceHistory();
+
+            // Clear the form
+            document.getElementById('addressedTo').value = '';
+            document.getElementById('grievanceSubject').value = '';
+            document.getElementById('grievanceDescription').value = '';
+            alert("Grievance submitted successfully!");
+        }
+
+        function showGrievancePopup(grievance) {
+            document.getElementById('grievancePopupSubject').textContent = grievance.subject;
+            document.getElementById('grievancePopupDescription').textContent = grievance.description;
+            document.getElementById('grievancePopupAddressedTo').textContent = grievance.addressedTo;
+            const statusSpan = document.getElementById('grievancePopupStatus');
+            statusSpan.textContent = grievance.status;
+            statusSpan.className = `status-tag ${grievance.status.toLowerCase().replace(' ', '-')}`;
+
+            const forwardChain = document.getElementById('forwardChain');
+            forwardChain.innerHTML = '';
+            grievance.forwardChain.forEach(entry => {
+                const item = document.createElement('div');
+                item.classList.add('forward-item');
+                item.innerHTML = `
+                    <p><strong>${entry.person} (${entry.date}):</strong></p>
+                    <p>${entry.message}</p>
+                    <p><span class="status-tag ${entry.status.toLowerCase().replace(' ', '-')}">${entry.status}</span></p>
+                `;
+                forwardChain.appendChild(item);
+            });
+
+            document.getElementById('grievancePopupOverlay').style.display = 'block';
+            document.querySelector('.grievance-popup').style.display = 'flex';
+        }
+
+        function closeGrievancePopup() {
+            document.getElementById('grievancePopupOverlay').style.display = 'none';
+            document.querySelector('.grievance-popup').style.display = 'none';
+        }
+
+        // Navbar toggle
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.querySelector('.navbar').classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        });
+    </script>
+</body>
+</html>

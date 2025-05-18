@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="s_grade.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="portal-title">
+            <img src="IIIT%20LOGO%203.svg" alt="IIIT Logo" class="logo">
+            <span>Student Portal</span>
+        </div>
+        <div class="top-buttons">
+            <a href="#logout" class="top-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#faculty"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</a></li>
+                <li><a href="#student"><i class="fas fa-user-graduate"></i> Student Details</a></li>
+                <li><a href="#notice"><i class="fas fa-bullhorn"></i> Notice Board</a></li>
+                <li><a href="#timetable"><i class="fas fa-clock"></i> Timetable</a></li>
+                <li><a href="#grievance"><i class="fas fa-comment-alt"></i> Grievance</a></li>
+                <li><a href="#classes"><i class="fas fa-book"></i> Classes</a></li>
+                <li><a href="#grades"><i class="fas fa-chart-bar"></i> Grades</a></li>
+                <li><a href="#books"><i class="fas fa-book-open"></i> Books</a></li>
+                <li><a href="#outstanding"><i class="fas fa-money-bill-wave"></i> Outstanding</a></li>
+                <li><a href="#fee"><i class="fas fa-file-invoice-dollar"></i> Fee Ledger</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="headline-slab">
+            <h1><i class="fas fa-graduation-cap"></i> Student Grade Details</h1>
+            <hr />
+            <div class="grade-details-container">
+                <!-- Student Info Section (Always visible) -->
+                <div class="student-info">
+                    <h3>Student Information</h3>
+                    <p><strong>Name:kau </strong> <span id="student-name"></span></p>
+                    <p><strong>Student ID: b123066</strong> <span id="student-id-display"></span></p>
+                    <p><strong>Program:asdd</strong> <span id="student-program"></span></p>
+                    <p><strong>Branch:dadad</strong> <span id="student-branch"></span></p>
+                </div>
+                <!-- Semester and Grade Details Section (Always visible) -->
+                <div class="grade-section">
+                    <div class="form-group semester-selector">
+                        <label for="semester"><b>Semester</b></label>
+                        <select id="semester">
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="3">Semester 3</option>
+                            <option value="4">Semester 4</option>
+                            <option value="5">Semester 5</option>
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="gpa-summary">
+                        <p><strong>SGPA:</strong> <span id="sgpa"></span></p>
+                        <p><strong>CGPA:</strong> <span id="cgpa"></span></p>
+                    </div>
+                    <div class="grade-table-container">
+                        <table class="grade-table">
+                            <thead>
+                                <tr>
+                                    <th>Course Code</th>
+                                    <th>Course Name</th>
+                                    <th>Credit</th>
+                                    <th>GPA Before Penalty</th>
+                                    <th>Penalty</th>
+                                    <th>GPA After Penalty</th>
+                                </tr>
+                            </thead>
+                            <tbody id="grade-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile menu toggle functionality for navbar
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navbar = document.querySelector('.navbar');
+        const body = document.body;
+
+        menuToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            body.classList.toggle('menu-open');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar') && !e.target.closest('.menu-toggle')) {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            });
+        });
+
+        // Grade Details Functionality
+        const searchBtn = document.querySelector(".search-btn");
+        const studentIdInput = document.getElementById("student-id");
+        const studentInfo = document.querySelector(".student-info");
+        const gradeSection = document.querySelector(".grade-section");
+        const semesterSelect = document.getElementById("semester");
+        const gradeTableBody = document.getElementById("grade-table-body");
+        const sgpaDisplay = document.getElementById("sgpa");
+        const cgpaDisplay = document.getElementById("cgpa");
+
+        // Expanded hard-coded student data
+        const studentData = {
+            "B001": {
+                name: "John Doe",
+                id: "B001",
+                program: "B.Tech",
+                branch: "Computer Science",
+                semesters: {
+                    "1": [
+                        { code: "CS101", name: "Introduction to Programming", credit: 4, gpaBefore: 8.5, penalty: 0.5, gpaAfter: 8.0 },
+                        { code: "MA101", name: "Mathematics I", credit: 4, gpaBefore: 7.8, penalty: 0.2, gpaAfter: 7.6 },
+                        { code: "PH101", name: "Physics I", credit: 3, gpaBefore: 8.2, penalty: 0.3, gpaAfter: 7.9 }
+                    ],
+                    "2": [
+                        { code: "CS201", name: "Data Structures", credit: 4, gpaBefore: 9.0, penalty: 0.3, gpaAfter: 8.7 },
+                        { code: "MA201", name: "Mathematics II", credit: 4, gpaBefore: 8.5, penalty: 0.0, gpaAfter: 8.5 },
+                        { code: "EE101", name: "Basic Electrical Engineering", credit: 3, gpaBefore: 7.5, penalty: 0.2, gpaAfter: 7.3 }
+                    ],
+                    "3": [
+                        { code: "CS301", name: "Algorithms", credit: 4, gpaBefore: 8.8, penalty: 0.4, gpaAfter: 8.4 },
+                        { code: "CS302", name: "Computer Organization", credit: 4, gpaBefore: 8.0, penalty: 0.1, gpaAfter: 7.9 },
+                        { code: "HS101", name: "Professional Communication", credit: 2, gpaBefore: 9.0, penalty: 0.0, gpaAfter: 9.0 }
+                    ],
+                    "4": [
+                        { code: "CS401", name: "Operating Systems", credit: 4, gpaBefore: 9.2, penalty: 0.1, gpaAfter: 9.1 },
+                        { code: "CS402", name: "Database Management", credit: 4, gpaBefore: 8.7, penalty: 0.2, gpaAfter: 8.5 },
+                        { code: "CS403", name: "Software Engineering", credit: 3, gpaBefore: 8.9, penalty: 0.0, gpaAfter: 8.9 }
+                    ],
+                    "5": [
+                        { code: "CS501", name: "Machine Learning", credit: 4, gpaBefore: 8.9, penalty: 0.2, gpaAfter: 8.7 },
+                        { code: "CS502", name: "Computer Networks", credit: 4, gpaBefore: 8.3, penalty: 0.3, gpaAfter: 8.0 },
+                        { code: "CS503", name: "Artificial Intelligence", credit: 3, gpaBefore: 9.1, penalty: 0.1, gpaAfter: 9.0 }
+                    ]
+                }
+            },
+            "B002": {
+                name: "Jane Smith",
+                id: "B002",
+                program: "B.Tech",
+                branch: "Electronics",
+                semesters: {
+                    "1": [
+                        { code: "EC101", name: "Basic Electronics", credit: 4, gpaBefore: 7.5, penalty: 0.4, gpaAfter: 7.1 },
+                        { code: "MA101", name: "Mathematics I", credit: 4, gpaBefore: 8.0, penalty: 0.2, gpaAfter: 7.8 },
+                        { code: "PH101", name: "Physics I", credit: 3, gpaBefore: 7.2, penalty: 0.0, gpaAfter: 7.2 }
+                    ],
+                    "2": [
+                        { code: "EC201", name: "Circuit Theory", credit: 4, gpaBefore: 8.2, penalty: 0.3, gpaAfter: 7.9 },
+                        { code: "MA201", name: "Mathematics II", credit: 4, gpaBefore: 7.8, penalty: 0.1, gpaAfter: 7.7 },
+                        { code: "CS101", name: "Introduction to Programming", credit: 3, gpaBefore: 8.5, penalty: 0.2, gpaAfter: 8.3 }
+                    ],
+                    "3": [
+                        { code: "EC301", name: "Signals and Systems", credit: 4, gpaBefore: 8.0, penalty: 0.0, gpaAfter: 8.0 },
+                        { code: "EC302", name: "Digital Electronics", credit: 4, gpaBefore: 7.9, penalty: 0.2, gpaAfter: 7.7 }
+                    ],
+                    "4": [
+                        { code: "EC401", name: "Microprocessors", credit: 4, gpaBefore: 8.4, penalty: 0.1, gpaAfter: 8.3 },
+                        { code: "EC402", name: "Communication Systems", credit: 4, gpaBefore: 8.1, penalty: 0.3, gpaAfter: 7.8 }
+                    ],
+                    "5": [
+                        { code: "EC501", name: "VLSI Design", credit: 4, gpaBefore: 8.6, penalty: 0.2, gpaAfter: 8.4 },
+                        { code: "EC502", name: "Embedded Systems", credit: 4, gpaBefore: 8.0, penalty: 0.0, gpaAfter: 8.0 }
+                    ]
+                }
+            },
+            "B003": {
+                name: "Alex Johnson",
+                id: "B003",
+                program: "B.Tech",
+                branch: "Mechanical",
+                semesters: {
+                    "1": [
+                        { code: "ME101", name: "Engineering Mechanics", credit: 4, gpaBefore: 7.0, penalty: 0.5, gpaAfter: 6.5 },
+                        { code: "MA101", name: "Mathematics I", credit: 4, gpaBefore: 6.8, penalty: 0.2, gpaAfter: 6.6 },
+                        { code: "CH101", name: "Chemistry", credit: 3, gpaBefore: 7.5, penalty: 0.1, gpaAfter: 7.4 }
+                    ],
+                    "2": [
+                        { code: "ME201", name: "Thermodynamics", credit: 4, gpaBefore: 7.8, penalty: 0.3, gpaAfter: 7.5 },
+                        { code: "MA201", name: "Mathematics II", credit: 4, gpaBefore: 7.2, penalty: 0.0, gpaAfter: 7.2 }
+                    ],
+                    "3": [
+                        { code: "ME301", name: "Fluid Mechanics", credit: 4, gpaBefore: 8.0, penalty: 0.2, gpaAfter: 7.8 },
+                        { code: "ME302", name: "Strength of Materials", credit: 4, gpaBefore: 7.7, penalty: 0.1, gpaAfter: 7.6 }
+                    ],
+                    "4": [
+                        { code: "ME401", name: "Heat Transfer", credit: 4, gpaBefore: 8.2, penalty: 0.0, gpaAfter: 8.2 },
+                        { code: "ME402", name: "Machine Design", credit: 4, gpaBefore: 7.9, penalty: 0.2, gpaAfter: 7.7 }
+                    ],
+                    "5": [
+                        { code: "ME501", name: "Manufacturing Processes", credit: 4, gpaBefore: 8.3, penalty: 0.1, gpaAfter: 8.2 },
+                        { code: "ME502", name: "Robotics", credit: 4, gpaBefore: 8.0, penalty: 0.3, gpaAfter: 7.7 }
+                    ]
+                }
+            }
+        };
+
+        // Function to handle search logic (used by both button click and Enter key)
+        function performSearch() {
+            const studentId = studentIdInput.value.trim();
+            if (studentData[studentId]) {
+                const student = studentData[studentId];
+                document.getElementById("student-name").textContent = student.name;
+                document.getElementById("student-id-display").textContent = student.id;
+                document.getElementById("student-program").textContent = student.program;
+                document.getElementById("student-branch").textContent = student.branch;
+                studentInfo.style.display = "block";
+                gradeSection.style.display = "block";
+                updateGradeTable("1"); // Default to semester 1
+            } else {
+                alert("Student ID not found!");
+                studentInfo.style.display = "none";
+                gradeSection.style.display = "none";
+            }
+        }
+
+        // Search button click handler
+        searchBtn.addEventListener("click", performSearch);
+
+        // Enter key press handler for the student ID input
+        studentIdInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault(); // Prevent any default form submission
+                performSearch();
+            }
+        });
+
+        // Semester selection handler
+        semesterSelect.addEventListener("change", (e) => {
+            updateGradeTable(e.target.value);
+        });
+
+        // Update grade table and GPA
+        function updateGradeTable(semester) {
+            const studentId = studentIdInput.value.trim();
+            if (!studentData[studentId]) return;
+
+            const student = studentData[studentId];
+            gradeTableBody.innerHTML = "";
+
+            if (semester === "all") {
+                // Display all semesters
+                let totalGradePoints = 0;
+                let totalCredits = 0;
+
+                Object.keys(student.semesters).forEach(sem => {
+                    const courses = student.semesters[sem];
+                    courses.forEach(course => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${course.code}</td>
+                            <td>${course.name}</td>
+                            <td>${course.credit}</td>
+                            <td>${course.gpaBefore.toFixed(2)}</td>
+                            <td>${course.penalty.toFixed(2)}</td>
+                            <td>${course.gpaAfter.toFixed(2)}</td>
+                        `;
+                        gradeTableBody.appendChild(row);
+                        totalGradePoints += course.gpaAfter * course.credit;
+                        totalCredits += course.credit;
+                    });
+                });
+
+                // Calculate and display CGPA only
+                const cgpa = totalCredits > 0 ? (totalGradePoints / totalCredits).toFixed(2) : "N/A";
+                sgpaDisplay.parentElement.style.display = "none";
+                cgpaDisplay.parentElement.style.display = "block";
+                cgpaDisplay.textContent = cgpa;
+            } else {
+                // Display specific semester
+                const courses = student.semesters[semester] || [];
+                let semesterGradePoints = 0;
+                let semesterCredits = 0;
+                let totalGradePoints = 0;
+                let totalCredits = 0;
+
+                // Populate table for selected semester
+                courses.forEach(course => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${course.code}</td>
+                        <td>${course.name}</td>
+                        <td>${course.credit}</td>
+                        <td>${course.gpaBefore.toFixed(2)}</td>
+                        <td>${course.penalty.toFixed(2)}</td>
+                        <td>${course.gpaAfter.toFixed(2)}</td>
+                    `;
+                    gradeTableBody.appendChild(row);
+                    semesterGradePoints += course.gpaAfter * course.credit;
+                    semesterCredits += course.credit;
+                });
+
+                // Calculate SGPA
+                const sgpa = semesterCredits > 0 ? (semesterGradePoints / semesterCredits).toFixed(2) : "N/A";
+
+                // Calculate CGPA (considering all semesters up to the selected one)
+                Object.keys(student.semesters).forEach(sem => {
+                    if (parseInt(sem) <= parseInt(semester)) {
+                        student.semesters[sem].forEach(course => {
+                            totalGradePoints += course.gpaAfter * course.credit;
+                            totalCredits += course.credit;
+                        });
+                    }
+                });
+
+                const cgpa = totalCredits > 0 ? (totalGradePoints / totalCredits).toFixed(2) : "N/A";
+
+                // Update GPA display
+                sgpaDisplay.parentElement.style.display = "block";
+                cgpaDisplay.parentElement.style.display = "block";
+                sgpaDisplay.textContent = sgpa;
+                cgpaDisplay.textContent = cgpa;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="s_library.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="portal-title">
+            <img src="IIIT%20LOGO%203.svg" alt="IIIT Logo" class="logo">
+            <span>Student Portal</span>
+        </div>
+        <div class="top-buttons">
+            <a href="#logout" class="top-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#faculty"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</a></li>
+                <li><a href="#student"><i class="fas fa-user-graduate"></i> Student Details</a></li>
+                <li><a href="#notice"><i class="fas fa-bullhorn"></i> Notice Board</a></li>
+                <li><a href="#timetable"><i class="fas fa-clock"></i> Timetable</a></li>
+                <li><a href="#grievance"><i class="fas fa-comment-alt"></i> Grievance</a></li>
+                <li><a href="#classes"><i class="fas fa-book"></i> Classes</a></li>
+                <li><a href="#grades"><i class="fas fa-chart-bar"></i> Grades</a></li>
+                <li><a href="#books"><i class="fas fa-book-open"></i> Books</a></li>
+                <li><a href="#outstanding"><i class="fas fa-money-bill-wave"></i> Outstanding</a></li>
+                <li><a href="#fee"><i class="fas fa-file-invoice-dollar"></i> Fee Ledger</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <!-- Borrowed Books Section -->
+        <div class="header-line">
+            <h1><i class="fas fa-book-reader"></i> Borrowed Books</h1>
+            <hr />
+        </div>
+
+        <div class="borrowed-books-section">
+            <table class="borrowed-books-table">
+                <thead>
+                    <tr>
+                        <th>Book Name</th>
+                        <th>Date of Issue</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody id="borrowedBooksTableBody">
+                    <!-- Rows will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Available Books Section -->
+        <div class="header-line">
+            <h1><i class="fas fa-book-open"></i> Available Books</h1>
+            <hr />
+        </div>
+
+        <div class="available-books-section">
+            <div class="search-container">
+                <input type="text" id="searchBookInput" placeholder="Search by book name..." />
+                <button class="search-btn" id="searchBookBtn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+
+            <div class="results-container" id="availableBooksResults">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile menu toggle functionality for navbar
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navbar = document.querySelector('.navbar');
+        const body = document.body;
+
+        menuToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            body.classList.toggle('menu-open');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar') && !e.target.closest('.menu-toggle')) {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            });
+        });
+
+        // Hardcoded Data
+        const borrowedBooks = [
+            { name: "Introduction to Algorithms", issueDate: "2025-04-01", dueDate: "2025-04-15" }, // Overdue
+            { name: "Data Structures", issueDate: "2025-05-01", dueDate: "2025-05-20" }, // Not overdue
+            { name: "Digital Electronics", issueDate: "2025-05-10", dueDate: "2025-05-17" } // Overdue
+        ];
+
+        const availableBooks = [
+            { name: "Introduction to Algorithms", available: 5 },
+            { name: "Data Structures", available: 0 },
+            { name: "Digital Electronics", available: 3 },
+            { name: "Circuit Theory", available: 2 }
+        ];
+
+        // Borrowed Books Logic
+        const currentDate = new Date("2025-05-18");
+        const borrowedBooksTableBody = document.getElementById("borrowedBooksTableBody");
+
+        borrowedBooks.forEach(book => {
+            const dueDate = new Date(book.dueDate);
+            const isOverdue = dueDate < currentDate;
+            const row = document.createElement("tr");
+            row.className = isOverdue ? "overdue" : "";
+            row.innerHTML = `
+                <td>${book.name}</td>
+                <td>${book.issueDate}</td>
+                <td>${book.dueDate}</td>
+            `;
+            borrowedBooksTableBody.appendChild(row);
+        });
+
+        // Available Books Logic
+        const searchBookInput = document.getElementById("searchBookInput");
+        const searchBookBtn = document.getElementById("searchBookBtn");
+        const availableBooksResults = document.getElementById("availableBooksResults");
+
+        function createBookCard(book) {
+            return `
+                <div class="book-card">
+                    <div class="book-info">
+                        <h3>${book.name}</h3>
+                        <div class="book-details">
+                            <p><i class="fas fa-book"></i> Available: ${book.available} copies</p>
+                        </div>
+                        <div class="availability-status ${book.available > 0 ? 'available' : 'unavailable'}">
+                            <i class="fas fa-${book.available > 0 ? 'check' : 'times'}-circle"></i>
+                            ${book.available > 0 ? 'Available' : 'Not Available'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function searchAvailableBooks() {
+            const searchTerm = searchBookInput.value.toLowerCase().trim();
+            availableBooksResults.innerHTML = '';
+
+            if (!searchTerm) {
+                return;
+            }
+
+            const filteredBooks = availableBooks.filter(book =>
+                book.name.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredBooks.length === 0) {
+                availableBooksResults.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>No books found matching your search criteria.</p>
+                    </div>
+                `;
+            } else {
+                availableBooksResults.innerHTML = filteredBooks.map(book => createBookCard(book)).join('');
+            }
+        }
+
+        searchBookBtn.addEventListener("click", searchAvailableBooks);
+        searchBookInput.addEventListener("keypress", e => {
+            if (e.key === "Enter") searchAvailableBooks();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="s_timetable.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="portal-title">
+            <img src="IIIT%20LOGO%203.svg" alt="IIIT Logo" class="logo">
+            <span>Student Portal</span>
+        </div>
+        <div class="top-buttons">
+            <a href="#logout" class="top-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#faculty"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</a></li>
+                <li><a href="#student"><i class="fas fa-user-graduate"></i> Student Details</a></li>
+                <li><a href="#notice"><i class="fas fa-bullhorn"></i> Notice Board</a></li>
+                <li><a href="#timetable"><i class="fas fa-clock"></i> Timetable</a></li>
+                <li><a href="#grievance"><i class="fas fa-comment-alt"></i> Grievance</a></li>
+                <li><a href="#classes"><i class="fas fa-book"></i> Classes</a></li>
+                <li><a href="#grades"><i class="fas fa-chart-bar"></i> Grades</a></li>
+                <li><a href="#books"><i class="fas fa-book-open"></i> Books</a></li>
+                <li><a href="#outstanding"><i class="fas fa-money-bill-wave"></i> Outstanding</a></li>
+                <li><a href="#fee"><i class="fas fa-file-invoice-dollar"></i> Fee Ledger</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="header-line">
+            <h1><i class="fas fa-calendar-alt"></i> Timetable</h1>
+            <hr />
+        </div>
+        <div class="pdf-container">
+            <embed src="timetable.pdf" type="application/pdf" width="100%" height="550px" />
+        </div>
+        <button class="download-btn">
+            <i class="fas fa-download"></i> Download Timetable
+        </button>
+    </main>
+
+    <script>
+        // Mobile menu toggle functionality for navbar
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navbar = document.querySelector('.navbar');
+        const body = document.body;
+
+        menuToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            body.classList.toggle('menu-open');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar') && !e.target.closest('.menu-toggle')) {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            });
+        });
+
+        // Timetable display/download toggle based on screen size
+        document.addEventListener('DOMContentLoaded', () => {
+            const pdfContainer = document.querySelector('.pdf-container');
+            const downloadBtn = document.querySelector('.download-btn');
+
+            function updateDisplay() {
+                if (window.innerWidth > 768) {
+                    pdfContainer.style.display = 'flex';
+                    downloadBtn.style.display = 'none';
+                } else {
+                    pdfContainer.style.display = 'none';
+                    downloadBtn.style.display = 'flex';
+                }
+            }
+
+            updateDisplay();
+            window.addEventListener('resize', updateDisplay);
+        });
+
+        // Download timetable button functionality
+        document.querySelector('.download-btn').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = 'timetable.pdf';
+            link.download = 'timetable.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</body>
+</html>

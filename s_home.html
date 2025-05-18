@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="s_home.css">
+    <meta name="description" content="Student Dashboard - Access your academic information and resources">
+    <meta name="theme-color" content="#4361ee">
+</head>
+<body>
+    <div class="header">
+        <div class="header-actions">
+            <div class="logout">
+                <div class="logout-circle">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <span>Logout</span>
+            </div>
+        </div>
+        <div class="welcome">Welcome back</div>
+        <div class="logo" title="IIIT">
+            <img src="IIIT%20LOGO%203.svg" alt="IIIT Logo" class="institute-logo">
+        </div>
+    </div>
+    <div class="dashboard">
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar"></div>
+                <div class="profile-info">
+                    <h1 class="profile-name">B423025</h1>
+                    <div class="profile-degree">B.Tech</div>
+                    <div class="profile-id">Computer Science & Engineering</div>
+                </div>
+                <div class="profile-actions">
+                    <div class="change-password-sm" title="Change Password">
+                        <img src="password.svg" alt="Change Password" class="icon">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-users"></i>
+            <span>Faculty Details</span>
+        </div>
+        <div class="card">
+            <i class="fas fa-bell"></i>
+            <span>Notice board</span>
+        </div>
+        <div class="card">
+            <i class="fas fa-book"></i>
+            <span>Books</span>
+        </div>
+        <div class="card">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Time Table</span>
+        </div>
+        <div class="card">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Grievances</span>
+        </div>
+        <div class="card">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>Classes</span>
+        </div>
+        <div class="card">
+            <i class="fas fa-graduation-cap"></i>
+            <span>View Grade</span>
+        </div>
+        <div class="card">
+            <i class="fas fa-user"></i>
+            <span>Student Details</span>
+        </div>
+        <div class="card">
+            <i class="fas fa-wallet"></i>
+            <span>Fee Ledger</span>
+        </div>
+          <div class="card">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Outstanding Amount</span>
+        </div>
+
+    </div>
+
+    <style>
+        .highlight {
+            color: #4cc9f0;
+            font-weight: 700;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-btn i {
+            font-size: 0.9rem;
+        }
+    </style>
+</body>
+</html>

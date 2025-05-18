@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="s_fee.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="portal-title">
+            <img src="IIIT%20LOGO%203.svg" alt="IIIT Logo" class="logo">
+            <span>Student Portal</span>
+        </div>
+        <div class="top-buttons">
+            <a href="#logout" class="top-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#faculty"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</a></li>
+                <li><a href="#student"><i class="fas fa-user-graduate"></i> Student Details</a></li>
+                <li><a href="#notice"><i class="fas fa-bullhorn"></i> Notice Board</a></li>
+                <li><a href="#timetable"><i class="fas fa-clock"></i> Timetable</a></li>
+                <li><a href="#grievance"><i class="fas fa-comment-alt"></i> Grievance</a></li>
+                <li><a href="#classes"><i class="fas fa-book"></i> Classes</a></li>
+                <li><a href="#grades"><i class="fas fa-chart-bar"></i> Grades</a></li>
+                <li><a href="#books"><i class="fas fa-book-open"></i> Books</a></li>
+                <li><a href="#outstanding"><i class="fas fa-money-bill-wave"></i> Outstanding</a></li>
+                <li><a href="#fee"><i class="fas fa-file-invoice-dollar"></i> Fee Ledger</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="headline-slab">
+            <h1><i class="fas fa-file-invoice-dollar"></i> Student Fee Ledger</h1>
+            <hr />
+        </div>
+        <div class="fee-ledger-container">
+            <h2>Student Fee Ledger</h2>
+            
+            <!-- Student Info Section -->
+            <div class="student-info">
+                <h3>Student Information</h3>
+                <p><strong>Name:</strong> <span id="student-name"></span></p>
+                <p><strong>Student ID:</strong> <span id="student-id-display"></span></p>
+                <p><strong>Program:</strong> <span id="student-program"></span></p>
+                <p><strong>Branch:</strong> <span id="student-branch"></span></p>
+            </div>
+            
+            <!-- Semester and Fee Details Section -->
+            <div class="fee-section">
+                <div class="form-group semester-selector">
+                    <label for="semester"><b>Semester</b></label>
+                    <select id="semester">
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                    </select>
+                </div>
+                
+                <!-- Fee Summary (Total only) -->
+                <div class="fee-summary">
+                    <p><strong>Total Amount:</strong> <span id="total-amount"></span></p>
+                </div>
+                
+                <!-- Fee Table -->
+                <div class="fee-table-container">
+                    <table class="fee-table">
+                        <thead>
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Amount (INR)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fee-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const studentInfo = document.querySelector(".student-info");
+        const feeSection = document.querySelector(".fee-section");
+        const semesterSelect = document.getElementById("semester");
+        const feeTableBody = document.getElementById("fee-table-body");
+        const totalAmountDisplay = document.getElementById("total-amount");
+
+        // Hard-coded student fee data (for B001 only)
+        const studentData = {
+            "B001": {
+                name: "John Doe",
+                id: "B001",
+                program: "B.Tech",
+                branch: "Computer Science",
+                semesters: {
+                    "1": {
+                        fees: [
+                            { type: "Tuition Fee", amount: 50000 },
+                            { type: "Hostel Fee", amount: 20000 },
+                            { type: "Water Fee", amount: 1000 },
+                            { type: "Electricity Fee", amount: 1500 },
+                            { type: "Mess Fee", amount: 10000 }
+                        ],
+                        total: 82500
+                    },
+                    "2": {
+                        fees: [
+                            { type: "Tuition Fee", amount: 52000 },
+                            { type: "Hostel Fee", amount: 21000 },
+                            { type: "Water Fee", amount: 1100 },
+                            { type: "Electricity Fee", amount: 1600 },
+                            { type: "Mess Fee", amount: 10500 }
+                        ],
+                        total: 86200
+                    },
+                    "3": {
+                        fees: [
+                            { type: "Tuition Fee", amount: 53000 },
+                            { type: "Hostel Fee", amount: 22000 },
+                            { type: "Water Fee", amount: 1200 },
+                            { type: "Electricity Fee", amount: 1700 },
+                            { type: "Mess Fee", amount: 11000 }
+                        ],
+                        total: 88900
+                    },
+                    "4": {
+                        fees: [
+                            { type: "Tuition Fee", amount: 54000 },
+                            { type: "Hostel Fee", amount: 23000 },
+                            { type: "Water Fee", amount: 1300 },
+                            { type: "Electricity Fee", amount: 1800 },
+                            { type: "Mess Fee", amount: 11500 }
+                        ],
+                        total: 91600
+                    },
+                    "5": {
+                        fees: [
+                            { type: "Tuition Fee", amount: 55000 },
+                            { type: "Hostel Fee", amount: 24000 },
+                            { type: "Water Fee", amount: 1400 },
+                            { type: "Electricity Fee", amount: 1900 },
+                            { type: "Mess Fee", amount: 12000 }
+                        ],
+                        total: 94300
+                    }
+                }
+            }
+        };
+
+        // Initialize with student B001 data on page load
+        function initializeStudentData() {
+            const studentId = "B001";
+            const student = studentData[studentId];
+            document.getElementById("student-name").textContent = student.name;
+            document.getElementById("student-id-display").textContent = student.id;
+            document.getElementById("student-program").textContent = student.program;
+            document.getElementById("student-branch").textContent = student.branch;
+            studentInfo.style.display = "block";
+            feeSection.style.display = "block";
+            updateFeeTable("1"); // Default to semester 1
+        }
+
+        // Semester selection handler
+        semesterSelect.addEventListener("change", (e) => {
+            updateFeeTable(e.target.value);
+        });
+
+        // Update fee table and total amount
+        function updateFeeTable(semester) {
+            const studentId = "B001";
+            const student = studentData[studentId];
+            const semesterData = student.semesters[semester] || {};
+            const fees = semesterData.fees || [];
+
+            // Populate fee table
+            feeTableBody.innerHTML = "";
+            fees.forEach(fee => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${fee.type}</td>
+                    <td>${fee.amount.toLocaleString('en-IN')}</td>
+                `;
+                feeTableBody.appendChild(row);
+            });
+
+            // Update total amount
+            totalAmountDisplay.textContent = semesterData.total.toLocaleString('en-IN');
+        }
+
+        // Toggle navbar for mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navbar = document.querySelector('.navbar');
+        menuToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        });
+
+        // Initialize on page load
+        window.addEventListener('load', initializeStudentData);
+    </script>
+</body>
+</html>

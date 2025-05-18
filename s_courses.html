@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="s_courses.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="portal-title">
+            <img src="IIIT%20LOGO%203.svg" alt="IIIT Logo" class="logo">
+            <span>Student Portal</span>
+        </div>
+        <div class="top-buttons">
+            <a href="#logout" class="top-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#faculty"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</a></li>
+                <li><a href="#student"><i class="fas fa-user-graduate"></i> Student Details</a></li>
+                <li><a href="#notice"><i class="fas fa-bullhorn"></i> Notice Board</a></li>
+                <li><a href="#timetable"><i class="fas fa-clock"></i> Timetable</a></li>
+                <li><a href="#grievance"><i class="fas fa-comment-alt"></i> Grievance</a></li>
+                <li><a href="#classes"><i class="fas fa-book"></i> Classes</a></li>
+                <li><a href="#grades"><i class="fas fa-chart-bar"></i> Grades</a></li>
+                <li><a href="#books"><i class="fas fa-book-open"></i> Books</a></li>
+                <li><a href="#outstanding"><i class="fas fa-money-bill-wave"></i> Outstanding</a></li>
+                <li><a href="#fee"><i class="fas fa-file-invoice-dollar"></i> Fee Ledger</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="headline-slab">
+            <h1><i class="fas fa-book"></i> My Courses</h1>
+            <hr />
+        </div>
+
+        <!-- Semester Selection -->
+        <div class="semester-section">
+            <div class="search-container">
+                <select id="semesterSelect">
+                    <option value="" disabled selected>Select Semester</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Course List -->
+        <div class="course-section" id="courseSection" style="display: none;">
+            <div class="table-container">
+                <table class="course-table">
+                    <thead>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Credits</th>
+                            <th>Venue</th>
+                            <th>Professor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courseList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Attendance Popup -->
+        <div class="popup-overlay" id="attendancePopupOverlay">
+            <div class="attendance-popup">
+                <h3 id="courseTitle"></h3>
+                <div class="attendance-circle" id="attendanceCircle"></div>
+                <div class="attendance-stats">
+                    <div class="stat-item"><span>Total Classes:</span><span id="totalClasses"></span></div>
+                    <div class="stat-item"><span>Present:</span><span id="presentClasses"></span></div>
+                    <div class="stat-item"><span>Absent:</span><span id="absentClasses"></span></div>
+                </div>
+                <div class="attendance-date-section">
+                    <h4>Check Attendance by Date</h4>
+                    <input type="date" id="attendanceDateInput" />
+                    <div class="attendance-date-list" id="attendanceDateList"></div>
+                </div>
+                <div class="announcement-section">
+                    <h4>Course Announcements</h4>
+                    <div class="announcement-history" id="courseAnnouncements"></div>
+                </div>
+                <button class="close-btn" onclick="closeAttendancePopup()">Close</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Sample data (in a real application, this would come from a backend)
+        const coursesData = {
+            1: [
+                { name: "Introduction to Programming", credits: 4, venue: "Room 101", professor: "Dr. Smith", attendance: 80, history: [{ date: "2025-05-01", status: "Present" }, { date: "2025-05-02", status: "Absent" }, { date: "2025-05-03", status: "Present" }] },
+                { name: "Mathematics I", credits: 3, venue: "Room 102", professor: "Dr. Jones", attendance: 65, history: [{ date: "2025-05-01", status: "Absent" }, { date: "2025-05-02", status: "Absent" }, { date: "2025-05-03", status: "Present" }] },
+            ],
+            2: [
+                { name: "Data Structures", credits: 4, venue: "Room 201", professor: "Dr. Brown", attendance: 90, history: [{ date: "2025-05-01", status: "Present" }, { date: "2025-05-02", status: "Present" }, { date: "2025-05-03", status: "Present" }] },
+                { name: "Physics I", credits: 3, venue: "Room 202", professor: "Dr. Wilson", attendance: 70, history: [{ date: "2025-05-01", status: "Present" }, { date: "2025-05-02", status: "Absent" }, { date: "2025-05-03", status: "Absent" }] },
+            ],
+        };
+
+        const announcementsData = [
+            { title: "Midterm Exam Schedule", content: "Midterm jjuurytytl'ptktkktktkktkktkltkktektkleexams for Introduction to Programming will start on June 1, 2025.", date: "2025-05-10", course: "Introduction to Programming" },
+            { title: "Holiday Notice", content: "College will remain closed on May 20, 2025.", date: "2025-05-15", course: "Mathematics I" },
+            { title: "Assignment Deadline", content: "Submit your Data Ssdfsfsf snfnmnfnkfdsdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddtructures assignment by May 25, 2025.", date: "2025-05-12", course: "Data Structures" },
+            { title: "Guest Lecture", content: "Guest lecture on Mechanics in Physics I on May 22, 2025.", date: "2025-05-14", course: "Physics I" },
+        ];
+
+        // Semester selection
+        const semesterSelect = document.getElementById('semesterSelect');
+        const courseSection = document.getElementById('courseSection');
+        const courseList = document.getElementById('courseList');
+
+        semesterSelect.addEventListener('change', () => {
+            const semester = semesterSelect.value;
+            if (semester && coursesData[semester]) {
+                courseSection.style.display = 'block';
+                populateCourses(coursesData[semester]);
+            } else {
+                courseSection.style.display = 'none';
+                courseList.innerHTML = '';
+            }
+        });
+
+        function populateCourses(courses) {
+            courseList.innerHTML = '';
+            courses.forEach(course => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${course.name}</td>
+                    <td>${course.credits}</td>
+                    <td>${course.venue}</td>
+                    <td>${course.professor}</td>
+                `;
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', () => showAttendancePopup(course));
+                courseList.appendChild(row);
+            });
+        }
+
+        // Attendance popup
+        const popupOverlay = document.getElementById('attendancePopupOverlay');
+        const attendancePopup = document.querySelector('.attendance-popup');
+        const courseTitle = document.getElementById('courseTitle');
+        const attendanceCircle = document.getElementById('attendanceCircle');
+        const totalClasses = document.getElementById('totalClasses');
+        const presentClasses = document.getElementById('presentClasses');
+        const absentClasses = document.getElementById('absentClasses');
+        const attendanceDateInput = document.getElementById('attendanceDateInput');
+        const attendanceDateList = document.getElementById('attendanceDateList');
+        const courseAnnouncements = document.getElementById('courseAnnouncements');
+
+        function showAttendancePopup(course) {
+            courseTitle.textContent = course.name;
+            attendanceCircle.textContent = `${course.attendance}%`;
+            attendanceCircle.style.backgroundColor = course.attendance >= 75 ? '#28a745' : '#dc3545';
+
+            // Calculate attendance stats
+            const total = course.history.length;
+            const present = course.history.filter(record => record.status === "Present").length;
+            const absent = total - present;
+            totalClasses.textContent = total;
+            presentClasses.textContent = present;
+            absentClasses.textContent = absent;
+
+            // Populate course-specific announcements
+            courseAnnouncements.innerHTML = '';
+            const filteredAnnouncements = announcementsData.filter(announcement => announcement.course === course.name);
+            if (filteredAnnouncements.length === 0) {
+                const item = document.createElement('div');
+                item.classList.add('announcement-item');
+                item.innerHTML = `<p>No announcements for this course.</p>`;
+                courseAnnouncements.appendChild(item);
+            } else {
+                filteredAnnouncements.forEach(announcement => {
+                    const item = document.createElement('div');
+                    item.classList.add('announcement-item');
+                    item.innerHTML = `
+                        <p><strong>${announcement.title}</strong></p>
+                        <p>${announcement.content}</p>
+                        <p><small>${announcement.date}</small></p>
+                    `;
+                    courseAnnouncements.appendChild(item);
+                });
+            }
+
+            attendanceDateInput.value = '';
+            attendanceDateList.innerHTML = '';
+
+            attendanceDateInput.onchange = () => {
+                const selectedDate = attendanceDateInput.value;
+                const attendanceRecord = course.history.find(record => record.date === selectedDate);
+                attendanceDateList.innerHTML = attendanceRecord
+                    ? `<div class="attendance-date-item"><span>${attendanceRecord.date}</span><span class="status ${attendanceRecord.status.toLowerCase()}">${attendanceRecord.status}</span></div>`
+                    : `<div class="attendance-date-item"><span>No record for ${selectedDate}</span></div>`;
+            };
+
+            popupOverlay.style.display = 'block';
+            attendancePopup.style.display = 'flex';
+        }
+
+        function closeAttendancePopup() {
+            popupOverlay.style.display = 'none';
+            attendancePopup.style.display = 'none';
+        }
+
+        // Navbar toggle
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.querySelector('.navbar').classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        });
+    </script>
+</body>
+</html>

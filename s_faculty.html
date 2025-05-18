@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="s_faculty.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="portal-title">
+            <img src="IIIT%20LOGO%203.svg" alt="IIIT Logo" class="logo">
+            <span>Student Portal</span>
+        </div>
+        <div class="top-buttons">
+            <a href="#logout" class="top-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#faculty"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</a></li>
+                <li><a href="#student"><i class="fas fa-user-graduate"></i> Student Details</a></li>
+                <li><a href="#notice"><i class="fas fa-bullhorn"></i> Notice Board</a></li>
+                <li><a href="#timetable"><i class="fas fa-clock"></i> Timetable</a></li>
+                <li><a href="#grievance"><i class="fas fa-comment-alt"></i> Grievance</a></li>
+                <li><a href="#classes"><i class="fas fa-book"></i> Classes</a></li>
+                <li><a href="#grades"><i class="fas fa-chart-bar"></i> Grades</a></li>
+                <li><a href="#books"><i class="fas fa-book-open"></i> Books</a></li>
+                <li><a href="#outstanding"><i class="fas fa-money-bill-wave"></i> Outstanding</a></li>
+                <li><a ندار href="#fee"><i class="fas fa-file-invoice-dollar"></i> Fee Ledger</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="header-line">
+            <h1><i class="fas fa-chalkboard-teacher"></i> Faculty Details</h1>
+            <hr />
+        </div>
+
+        <div class="faculty-section">
+            <div class="search-container">
+                <input type="text" id="searchFacultyID" placeholder="Search by ID" />
+                <input type="text" id="searchFacultyName" placeholder="Search by Name" />
+                <select id="searchDepartment">
+                    <option value="">All Departments</option>
+                    <option value="CSE">CSE</option>
+                    <option value="ECE">ECE</option>
+                    <option value="Basic Science">Basic Science and Humanities</option>
+                </select>
+                <button onclick="searchFaculty()">Search</button>
+            </div>
+
+            <div class="results-container">
+                <ul id="facultyList"></ul>
+                <p id="noFacultyMessage">No faculty found matching your search criteria.</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="popup-overlay" id="popupOverlay"></div>
+    <div class="faculty-popup" id="facultyPopup">
+        <img id="popupPhoto" src="https://via.placeholder.com/120" alt="Faculty Photo" />
+        <h3 id="popupName">Faculty Name</h3>
+        <div class="faculty-info-grid">
+            <div class="info-row">
+                <span class="label">Unique ID</span>
+                <span class="value" id="popupID"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Department</span>
+                <span class="value" id="popupDepartment"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Designation</span>
+                <span class="value" id="popupDesignation"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Experience</span>
+                <span class="value" id="popupExperience"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Currently Teaching</span>
+                <span class="value" id="popupTeaching"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Qualification</span>
+                <span class="value" id="popupQualification"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Contact</span>
+                <span class="value" id="popupContact"></span>
+            </div>
+            <div class="info-row">
+                <span class="label">Last Login</span>
+                <span class="value" id="popupLogin"></span>
+            </div>
+        </div>
+        <button class="close-btn" onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        // Faculty Data
+        const facultyList = [
+            {
+                name: "Dr. Anita Sharma",
+                id: "F1001",
+                department: "CSE",
+                experience: "12 years at NIT Rourkela",
+                currentlyTeaching: "Data Structures, Algorithms",
+                qualification: "Ph.D. in Computer Science",
+                contact: "anita@iiitbh.ac.in | 9876543210",
+                lastLogin: "2025-05-13 14:30",
+                designation: "Professor",
+                photo: "images/anita.jpg"
+            },
+            {
+                name: "Prof. Rakesh Verma",
+                id: "F1002",
+                department: "ECE",
+                experience: "9 years at IIIT Hyderabad",
+                currentlyTeaching: "Digital Signal Processing",
+                qualification: "M.Tech in VLSI",
+                contact: "rakesh@iiitbh.ac.in | 9830011122",
+                lastLogin: "2025-05-12 10:05",
+                designation: "Associate Professor",
+                photo: "images/rakesh.jpg"
+            },
+            {
+                name: "Prof. Kau Khan",
+                id: "F1003",
+                department: "Zihad",
+                experience: "9 years at Karachi University",
+                currentlyTeaching: "Digital Signal Processing in AFG",
+                qualification: "M.Tech in Bomb Blasting Jaise-e-Mohammad",
+                contact: "khankau@iiitbh.ac.in | 9830011122",
+                lastLogin: "2025-05-12 10:05",
+                designation: "Associate Muzahid",
+                photo: "images.jpg"
+            }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('noFacultyMessage').style.display = 'none';
+            document.getElementById('facultyList').style.display = 'none';
+        });
+
+        // Search Faculty Function
+        const searchFaculty = () => {
+            const id = document.getElementById("searchFacultyID").value.toLowerCase();
+            const name = document.getElementById("searchFacultyName").value.toLowerCase();
+            const dept = document.getElementById("searchDepartment").value;
+
+            const listEl = document.getElementById("facultyList");
+            const noMsg = document.getElementById("noFacultyMessage");
+            listEl.innerHTML = "";
+
+            const result = facultyList.filter(f =>
+                f.id.toLowerCase().includes(id) &&
+                f.name.toLowerCase().includes(name) &&
+                (dept === "" || f.department === dept)
+            );
+
+            if (result.length === 0) {
+                listEl.style.display = 'none';
+                noMsg.style.display = "block";
+            } else {
+                listEl.style.display = 'block';
+                noMsg.style.display = "none";
+                result.forEach(faculty => {
+                    const li = document.createElement("li");
+                    li.textContent = `${faculty.name} (${faculty.id}) - ${faculty.department} ${faculty.designation}`;
+                    li.onclick = () => showFacultyDetails(faculty);
+                    listEl.appendChild(li);
+                });
+            }
+        };
+
+        // Show Faculty Details in Popup
+        const showFacultyDetails = (faculty) => {
+            document.getElementById("popupName").innerText = faculty.name;
+            document.getElementById("popupID").innerText = faculty.id;
+            document.getElementById("popupExperience").innerText = faculty.experience;
+            document.getElementById("popupTeaching").innerText = faculty.currentlyTeaching;
+            document.getElementById("popupQualification").innerText = faculty.qualification;
+            document.getElementById("popupDepartment").innerText = faculty.department;
+            document.getElementById("popupContact").innerText = faculty.contact;
+            document.getElementById("popupLogin").innerText = faculty.lastLogin;
+            document.getElementById("popupPhoto").src = faculty.photo || "https://via.placeholder.com/120";
+            document.getElementById("popupDesignation").innerText = faculty.designation;
+            document.getElementById("facultyPopup").style.display = "flex";
+            document.getElementById("popupOverlay").style.display = "block";
+        };
+
+        // Close Popup
+        const closePopup = () => {
+            document.getElementById("facultyPopup").style.display = "none";
+            document.getElementById("popupOverlay").style.display = "none";
+        };
+
+        // Mobile menu toggle functionality for navbar
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navbar = document.querySelector('.navbar');
+        const body = document.body;
+
+        menuToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+            body.classList.toggle('menu-open');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar') && !e.target.closest('.menu-toggle')) {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navbar.classList.remove('active');
+                body.classList.remove('menu-open');
+            });
+        });
+
+        // Add event listeners for Enter key on search inputs
+        document.getElementById('searchFacultyID').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchFaculty();
+        });
+
+        document.getElementById('searchFacultyName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchFaculty();
+        });
+    </script>
+</body>
+</html>
