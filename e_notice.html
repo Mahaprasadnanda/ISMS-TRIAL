@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notice Board - IIIT Bhubaneswar</title>
+  <link rel="stylesheet" href="e_notice.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<header class="mobile-header">
+  <button id="menuToggle"><i class="fas fa-bars"></i></button>
+  <h2>Notice Board</h2>
+</header>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <a href="d_home.html" class="back-btn-sidebar">
+      <i class="fas fa-arrow-left"></i>
+      Back to Dashboard
+    </a>
+    <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+    <button class="side-btn"><i class="fas fa-user-graduate"></i> Student Details</button>
+    <button class="side-btn"><i class="fas fa-address-book"></i> Student FeeLedger</button>
+    <button class="side-btn"><i class="fas fa-upload"></i> Student Update</button>
+    <button class="side-btn"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</button>
+    <button class="side-btn"><i class="fas fa-user-edit"></i> Faculty Update</button>
+    <button class="side-btn"><i class="fas fa-clipboard-check"></i> Grade Input</button>
+    <button class="side-btn"><i class="fas fa-graduation-cap"></i> Student Grade Details</button>
+    <button class="side-btn active"><i class="fas fa-calendar-alt"></i> Timetable</button>
+    <div class="logo-container">
+      <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+      <p class="footer-text">IIIT Student Management System</p>
+      <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header-line">
+      <div class="header-content">
+        <h1><i class="fas fa-bullhorn"></i> Notice Board</h1>
+        <button class="post-notice-btn" id="postNoticeBtn">
+          <i class="fas fa-plus"></i> Post Notice
+        </button>
+      </div>
+      <hr />
+    </div>
+
+    <div class="notice-section">
+      <div class="notice-list" id="noticeList">
+        <!-- Notice items will be added here dynamically -->
+      </div>
+      <p id="noNoticeMessage">No notices found.</p>
+    </div>
+  </main>
+</div>
+
+<div class="popup-overlay" id="noticePopupOverlay"></div>
+<div class="notice-popup" id="noticePopup">
+  <div class="popup-header">
+    <h3>Post a Notice</h3>
+    <button id="closeNoticePopupBtn" class="close-btn">Close</button>
+  </div>
+  <form class="notice-form" id="noticeForm">
+    <label for="noticeTitle">Title</label>
+    <input type="text" id="noticeTitle" required>
+    <label for="noticeContent">Content</label>
+    <textarea id="noticeContent" required></textarea>
+    <label for="attention">Attention</label>
+    <select id="attention" name="attention" required>
+      <option value="">Select Audience</option>
+      <option value="students">Students</option>
+      <option value="faculty">Faculty</option>
+      <option value="btech-cse">B.Tech CSE</option>
+      <option value="btech-it">B.Tech IT</option>
+      <option value="mtech-cse">M.Tech CSE</option>
+      <option value="phd-cse">PhD CSE</option>
+    </select>
+    <label for="document">Attach Document (optional)</label>
+    <input type="file" id="document" name="document" />
+    <button type="submit" class="post-btn"><i class="fas fa-bullhorn"></i> Post Notice</button>
+  </form>
+</div>
+
+<div class="notice-details-popup" id="noticeDetailsPopup">
+  <div class="popup-header">
+    <h3 id="noticePopupTitle">Notice Details</h3>
+    <button id="closeNoticeDetailsBtn" class="close-btn-red">Close</button>
+  </div>
+  <div class="notice-info-grid">
+    <div class="info-row">
+      <span class="label">Notice ID</span>
+      <span class="value" id="noticePopupID"></span>
+    </div>
+    <div class="info-row">
+      <span class="label">Date & Time</span>
+      <span class="value" id="noticePopupDateTime"></span>
+    </div>
+    <div class="info-row">
+      <span class="label">Attention</span>
+      <span class="value" id="noticePopupAttention"></span>
+    </div>
+    <div class="info-row full-width">
+      <span class="label">Title</span>
+      <span class="value" id="noticePopupTitle"></span>
+    </div>
+    <div class="info-row full-width">
+      <span class="label">Content</span>
+      <span class="value" id="noticePopupContent"></span>
+    </div>
+    <div class="info-row full-width" id="noticeDocumentRow">
+      <span class="label">Attached Document</span>
+      <span class="value" id="noticePopupDocument"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mock user role - in a real app this would come from backend
+  const currentUserRole = "admin"; // Can be "admin", "faculty", "student", etc.
+
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("show");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768) {
+      if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        sidebar.classList.remove("show");
+      }
+    }
+  });
+
+  const noticeList = [
+    {
+      id: "N1001",
+      title: "Welcome to the New Academic Year",
+      content: "We are excited to welcome all students to the new academic year. Please ensure you have completed your registration process.",
+      dateTime: "2024-03-15 14:30",
+      attention: "All Students",
+      from: "Director",
+      postedBy: "admin"
+    },
+    {
+      id: "N1002",
+      title: "Holiday Notice",
+      content: "The institute will remain closed on March 20, 2024, due to a public holiday.",
+      dateTime: "2024-03-14 10:15",
+      attention: "All Students & Faculty",
+      from: "Administration",
+      postedBy: "admin"
+    },
+    {
+      id: "N1003",
+      title: "Upcoming Workshop",
+      content: "A workshop on 'Advanced Programming Techniques' will be held on March 25, 2024. All interested students are encouraged to attend.",
+      dateTime: "2024-03-13 16:45",
+      attention: "B.Tech CSE",
+      from: "CSE Department",
+      postedBy: "faculty"
+    },
+    {
+      id: "N1004",
+      title: "Sports Meet Registration",
+      content: "Annual Sports Meet registration is now open. All students are encouraged to participate in various events.",
+      dateTime: "2024-03-12 09:30",
+      attention: "All Students",
+      from: "Sports Department",
+      postedBy: "faculty"
+    }
+  ];
+
+  function renderNotices() {
+    const listEl = document.getElementById("noticeList");
+    const noMsg = document.getElementById("noNoticeMessage");
+    listEl.innerHTML = "";
+
+    if (noticeList.length === 0) {
+      noMsg.style.display = "block";
+    } else {
+      noMsg.style.display = "none";
+      noticeList.forEach(notice => {
+        const div = document.createElement("div");
+        div.className = "notice-item";
+
+        // Check if current user can edit/delete this notice
+        const canEditDelete = currentUserRole === "admin" ||
+                (currentUserRole === "faculty" && notice.postedBy === "faculty");
+
+        div.innerHTML = `
+                    <div class="notice-content">
+                        <div class="notice-title">${notice.title}</div>
+                        <div class="notice-meta">
+                            <span><i class="fas fa-user"></i> By: ${notice.from}</span>
+                        </div>
+                    </div>
+                    <div class="notice-actions">
+                        <div class="notice-timestamp">
+                            <span><i class="fas fa-clock"></i> ${notice.dateTime}</span>
+                        </div>
+                        <div class="notice-controls">
+                            ${canEditDelete ? `
+                                <button class="edit-notice-btn" data-id="${notice.id}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="delete-notice-btn" data-id="${notice.id}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+        div.onclick = (e) => {
+          // Don't open details if clicking on edit/delete buttons
+          if (!e.target.closest('.notice-controls')) {
+            showNoticeDetails(notice);
+          }
+        };
+        listEl.appendChild(div);
+      });
+
+      // Add event listeners for edit and delete buttons
+      document.querySelectorAll('.edit-notice-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const noticeId = btn.getAttribute('data-id');
+          editNotice(noticeId);
+        });
+      });
+
+      document.querySelectorAll('.delete-notice-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const noticeId = btn.getAttribute('data-id');
+          if (confirm('Are you sure you want to delete this notice?')) {
+            deleteNotice(noticeId);
+          }
+        });
+      });
+    }
+  }
+
+  function editNotice(noticeId) {
+    const notice = noticeList.find(n => n.id === noticeId);
+    if (!notice) return;
+
+    // Fill the form with notice data
+    document.getElementById("noticeTitle").value = notice.title;
+    document.getElementById("noticeContent").value = notice.content;
+    document.getElementById("attention").value = notice.attention.toLowerCase().replace(' & ', '-').replace(' ', '-');
+
+    // Change form to edit mode
+    const form = document.getElementById("noticeForm");
+    form.dataset.editing = noticeId;
+    form.querySelector('button[type="submit"]').textContent = "Update Notice";
+
+    // Open the popup
+    openNoticePopup();
+  }
+
+  function deleteNotice(noticeId) {
+    const index = noticeList.findIndex(n => n.id === noticeId);
+    if (index !== -1) {
+      noticeList.splice(index, 1);
+      renderNotices();
+    }
+  }
+
+  function showNoticeDetails(notice) {
+    document.getElementById("noticePopupID").innerText = notice.id;
+    document.getElementById("noticePopupTitle").innerText = notice.title;
+    document.getElementById("noticePopupDateTime").innerText = notice.dateTime;
+    document.getElementById("noticePopupAttention").innerText = notice.attention;
+    document.getElementById("noticePopupContent").innerText = notice.content;
+
+    const documentRow = document.getElementById("noticeDocumentRow");
+    if (notice.document) {
+      documentRow.style.display = "grid";
+      document.getElementById("noticePopupDocument").innerText = notice.document;
+    } else {
+      documentRow.style.display = "none";
+    }
+
+    document.getElementById("noticeDetailsPopup").style.display = "flex";
+    document.getElementById("noticePopupOverlay").style.display = "block";
+  }
+
+  function closeNoticeDetailsPopup() {
+    document.getElementById("noticeDetailsPopup").style.display = "none";
+    document.getElementById("noticePopupOverlay").style.display = "none";
+  }
+
+  function openNoticePopup() {
+    document.getElementById("noticePopupOverlay").style.display = "block";
+    document.getElementById("noticePopup").style.display = "flex";
+  }
+
+  function closeNoticePopup() {
+    document.getElementById("noticePopupOverlay").style.display = "none";
+    document.getElementById("noticePopup").style.display = "none";
+
+    // Reset form
+    const form = document.getElementById("noticeForm");
+    form.reset();
+    delete form.dataset.editing;
+    form.querySelector('button[type="submit"]').textContent = "Post Notice";
+  }
+
+  // Event Listeners
+  document.getElementById("postNoticeBtn").addEventListener("click", function() {
+    // Reset form before opening
+    const form = document.getElementById("noticeForm");
+    form.reset();
+    delete form.dataset.editing;
+    form.querySelector('button[type="submit"]').textContent = "Post Notice";
+    openNoticePopup();
+  });
+
+  document.getElementById("closeNoticePopupBtn").addEventListener("click", closeNoticePopup);
+  document.getElementById("closeNoticeDetailsBtn").addEventListener("click", closeNoticeDetailsPopup);
+  document.getElementById("noticePopupOverlay").addEventListener("click", function(e) {
+    if (e.target === this) {
+      closeNoticePopup();
+      closeNoticeDetailsPopup();
+    }
+  });
+
+  document.getElementById("noticeForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const title = document.getElementById("noticeTitle").value;
+    const content = document.getElementById("noticeContent").value;
+    const attention = document.getElementById("attention").value;
+    const document = document.getElementById("document").files[0]?.name || "";
+
+    // Format attention for display
+    const attentionDisplay = {
+      'students': 'All Students',
+      'faculty': 'Faculty',
+      'btech-cse': 'B.Tech CSE',
+      'btech-it': 'B.Tech IT',
+      'mtech-cse': 'M.Tech CSE',
+      'phd-cse': 'PhD CSE'
+    }[attention] || attention;
+
+    if (this.dataset.editing) {
+      // Update existing notice
+      const notice = noticeList.find(n => n.id === this.dataset.editing);
+      if (notice) {
+        notice.title = title;
+        notice.content = content;
+        notice.attention = attentionDisplay;
+        notice.dateTime = new Date().toLocaleString('en-IN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).replace(/(\d+)\/(\d+)\/(\d+),?/, '$2/$1/$3');
+        if (document) notice.document = document;
+      }
+    } else {
+      // Add new notice
+      const newNotice = {
+        id: "N" + (1000 + noticeList.length + 1),
+        title,
+        content,
+        attention: attentionDisplay,
+        dateTime: new Date().toLocaleString('en-IN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).replace(/(\d+)\/(\d+)\/(\d+),?/, '$2/$1/$3'),
+        from: currentUserRole === 'admin' ? 'Administration' : 'Faculty',
+        postedBy: currentUserRole
+      };
+      if (document) newNotice.document = document;
+      noticeList.unshift(newNotice);
+    }
+
+    renderNotices();
+    closeNoticePopup();
+  });
+
+  // Initial render
+  renderNotices();
+</script>
+</body>
+</html>

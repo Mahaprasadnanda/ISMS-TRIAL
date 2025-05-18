@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timetable Upload</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="e_supdate.css">
+</head>
+<body>
+
+<header class="mobile-header">
+  <button id="menuToggle"><i class="fas fa-bars"></i></button>
+  <h2>Timetable Upload</h2>
+</header>
+
+<div class="container">
+  <div class="scroll-container">
+    <aside class="sidebar" id="sidebar">
+      <a href="d_home.html" class="back-btn-sidebar">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+      </a>
+      <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+      <button class="side-btn"><i class="fas fa-user-graduate"></i> Student Details</button>
+      <button class="side-btn"><i class="fas fa-address-book"></i> Student FeeLedger</button>
+      <button class="side-btn"><i class="fas fa-upload"></i> Student Update</button>
+      <button class="side-btn"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</button>
+      <button class="side-btn"><i class="fas fa-user-edit"></i> Faculty Update</button>
+      <button class="side-btn"><i class="fas fa-clipboard-check"></i> Grade Input</button>
+      <button class="side-btn"><i class="fas fa-graduation-cap"></i> Student Grade Details</button>
+      <button class="side-btn active"><i class="fas fa-calendar-alt"></i> Timetable</button>
+      <div class="logo-container">
+        <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+        <p class="footer-text">IIIT Student Management System</p>
+        <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+      </div>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+      <div class="header-line">
+        <h1><i class="fas fa-calendar-alt"></i> Timetable Upload</h1>
+        <hr />
+      </div>
+      
+      <div class="student-update-container">
+        <div class="update-slab">
+          <h2><i class="fas fa-calendar-alt"></i> Upload Timetable</h2>
+          <form id="timetableUploadForm">
+            <div class="form-group">
+              <label for="timetableFile">Upload Timetable Document (PDF/Excel):</label>
+              <input type="file" id="timetableFile" accept=".pdf, .xlsx, .xls" required>
+            </div>
+            <button type="submit" class="submit-btn">Submit</button>
+          </form>
+        </div>
+
+        <div class="update-slab">
+          <h2><i class="fas fa-bullhorn"></i> Publish Timetable</h2>
+          <button id="publishTimetableBtn" class="submit-btn">Publish Timetable</button>
+          <div id="publishedTimetables" style="margin-top: 20px;">
+            <p>No timetables published yet.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const mainContent = document.getElementById("mainContent");
+
+  // Array to store submitted timetable data
+  let timetableData = [];
+
+  // Handle form submission to store timetable data
+  const handleTimetableSubmission = () => {
+    const form = document.getElementById("timetableUploadForm");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const fileInput = document.getElementById("timetableFile");
+      const fileName = fileInput.files[0]?.name || "No file uploaded";
+
+      // Store the data
+      timetableData.push({
+        fileName,
+        timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+      });
+
+      alert("Timetable uploaded successfully!");
+      form.reset(); // Reset the form
+    });
+  };
+
+  // Handle publishing timetables with PDF container and delete option
+  const handlePublishTimetables = () => {
+    const publishBtn = document.getElementById("publishTimetableBtn");
+    const timetablesDiv = document.getElementById("publishedTimetables");
+
+    const renderTimetables = () => {
+      if (timetableData.length === 0) {
+        timetablesDiv.innerHTML = "<p>No timetables published yet.</p>";
+        return;
+      }
+
+      let html = "<h3>Published Timetables</h3>";
+      timetableData.forEach((data, index) => {
+        html += `
+          <div style="border: 1px solid #e0d7ef; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #f7f6fa;">
+            <strong>Timetable ${index + 1}:</strong><br>
+            File: ${data.fileName}, 
+            Uploaded: ${data.timestamp}
+            <div style="margin-top: 10px; border: 1px dashed #a259c6; border-radius: 5px; padding: 10px; background: #fff; text-align: center;">
+              <i class="fas fa-file-pdf" style="color: #a259c6; font-size: 24px;"></i><br>
+              <span style="color: #4b006e;">PDF Preview: ${data.fileName}</span><br>
+              <p style="font-size: 12px; color: #2d014d;">(PDF would be displayed here in a real implementation)</p>
+            </div>
+            <button class="delete-btn" data-index="${index}" style="margin-top: 10px; background: #ff0000; color: #fff; border: none; padding: 8px 15px; border-radius: 25px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.3s ease;">
+              Delete
+            </button>
+          </div>
+        `;
+      });
+      timetablesDiv.innerHTML = html;
+
+      // Add event listeners for delete buttons
+      document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const index = parseInt(e.target.getAttribute("data-index"));
+          timetableData.splice(index, 1); // Remove the entry from the array
+          renderTimetables(); // Re-render the list
+          alert("Timetable deleted successfully!");
+        });
+      });
+    };
+
+    publishBtn.addEventListener("click", renderTimetables);
+  };
+
+  // Initialize functions on page load
+  handleTimetableSubmission();
+  handlePublishTimetables();
+
+  // Sidebar toggle for mobile
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("show");
+  });
+
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768) {
+      if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        sidebar.classList.remove("show");
+      }
+    }
+  });
+
+  // Synchronized scrolling between sidebar and main content
+  let isSyncingSidebar = false;
+  let isSyncingMain = false;
+
+  sidebar.addEventListener("scroll", () => {
+    if (!isSyncingSidebar) {
+      isSyncingMain = true;
+      const sidebarScrollRatio = sidebar.scrollTop / (sidebar.scrollHeight - sidebar.clientHeight);
+      mainContent.scrollTop = sidebarScrollRatio * (mainContent.scrollHeight - mainContent.clientHeight);
+    }
+    isSyncingSidebar = false;
+  });
+
+  mainContent.addEventListener("scroll", () => {
+    if (!isSyncingMain) {
+      isSyncingSidebar = true;
+      const mainScrollRatio = mainContent.scrollTop / (mainContent.scrollHeight - mainContent.clientHeight);
+      sidebar.scrollTop = mainScrollRatio * (sidebar.scrollHeight - sidebar.clientHeight);
+    }
+    isSyncingMain = false;
+  });
+</script>
+
+</body>
+</html>

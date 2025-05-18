@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Fee Ledger - IIIT Bhubaneswar</title>
+  <link rel="stylesheet" href="e_fee.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header class="mobile-header">
+  <button id="menuToggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+  <h2>Student Fee Ledger</h2>
+</header>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <a href="d_home.html" class="back-btn-sidebar">
+      <i class="fas fa-arrow-left"></i>
+      Back to Dashboard
+    </a>
+    <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+    <button class="side-btn"><i class="fas fa-user-graduate"></i> Student Details</button>
+    <button class="side-btn active"><i class="fas fa-address-book"></i> Student FeeLedger</button>
+    <button class="side-btn"><i class="fas fa-upload"></i> Student Update</button>
+    <button class="side-btn"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</button>
+    <button class="side-btn"><i class="fas fa-user-edit"></i> Faculty Update</button>
+    <button class="side-btn"><i class="fas fa-clipboard-check"></i> Grade Input</button>
+    <button class="side-btn"><i class="fas fa-graduation-cap"></i> Student Grade Details</button>
+    <button class="side-btn"><i class="fas fa-calendar-alt"></i> Timetable</button>
+    <div class="logo-container">
+      <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+      <p class="footer-text">IIIT Student Management System</p>
+      <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header-line">
+      <h1><i class="fas fa-address-book"></i> Student Fee Ledger</h1>
+      <hr />
+      <div class="fee-ledger-container">
+        <h2>Student Fee Ledger</h2>
+        
+        <!-- Student Search Section -->
+        <div class="search-section">
+          <div class="form-group">
+            <label for="student-id">Student ID</label>
+            <input type="text" id="student-id" placeholder="Enter Student ID" />
+          </div>
+          <button class="submit-btn search-btn">Search</button>
+        </div>
+        
+        <!-- Student Info Section (Hidden until search) -->
+        <div class="student-info" style="display: none;">
+          <h3>Student Information</h3>
+          <p><strong>Name:</strong> <span id="student-name"></span></p>
+          <p><strong>Student ID:</strong> <span id="student-id-display"></span></p>
+          <p><strong>Program:</strong> <span id="student-program"></span></p>
+          <p><strong>Branch:</strong> <span id="student-branch"></span></p>
+        </div>
+        
+        <!-- Semester and Fee Details Section -->
+        <div class="fee-section" style="display: none;">
+          <div class="form-group semester-selector">
+            <label for="semester">Semester</label>
+            <select id="semester">
+              <option value="1">Semester 1</option>
+              <option value="2">Semester 2</option>
+              <option value="3">Semester 3</option>
+              <option value="4">Semester 4</option>
+              <option value="5">Semester 5</option>
+            </select>
+          </div>
+          
+          <!-- Fee Summary (Total, Paid, Outstanding) -->
+          <div class="fee-summary">
+            <p><strong>Total Amount:</strong> <span id="total-amount"></span></p>
+            <p><strong>Paid Amount:</strong> <span id="paid-amount"></span></p>
+            <p><strong>Outstanding Amount:</strong> <span id="outstanding-amount"></span></p>
+          </div>
+          
+          <!-- Fee Table -->
+          <div class="fee-table-container">
+            <table class="fee-table">
+              <thead>
+                <tr>
+                  <th>Fee Type</th>
+                  <th>Amount (INR)</th>
+                </tr>
+              </thead>
+              <tbody id="fee-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const searchBtn = document.querySelector(".search-btn");
+  const studentIdInput = document.getElementById("student-id");
+  const studentInfo = document.querySelector(".student-info");
+  const feeSection = document.querySelector(".fee-section");
+  const semesterSelect = document.getElementById("semester");
+  const feeTableBody = document.getElementById("fee-table-body");
+  const totalAmountDisplay = document.getElementById("total-amount");
+  const paidAmountDisplay = document.getElementById("paid-amount");
+  const outstandingAmountDisplay = document.getElementById("outstanding-amount");
+
+  // Mobile menu toggle
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("show");
+  });
+
+  // Close sidebar when clicking outside
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768) {
+      if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        sidebar.classList.remove("show");
+      }
+    }
+  });
+
+  // Hard-coded student fee data with paid and outstanding amounts
+  const studentData = {
+    "B001": {
+      name: "John Doe",
+      id: "B001",
+      program: "B.Tech",
+      branch: "Computer Science",
+      semesters: {
+        "1": {
+          fees: [
+            { type: "Tuition Fee", amount: 50000 },
+            { type: "Hostel Fee", amount: 20000 },
+            { type: "Water Fee", amount: 1000 },
+            { type: "Electricity Fee", amount: 1500 },
+            { type: "Mess Fee", amount: 10000 }
+          ],
+          total: 82500,
+          paid: 81500,
+          outstanding: 1000 // Outstanding > 0, will be red
+        },
+        "2": {
+          fees: [
+            { type: "Tuition Fee", amount: 52000 },
+            { type: "Hostel Fee", amount: 21000 },
+            { type: "Water Fee", amount: 1100 },
+            { type: "Electricity Fee", amount: 1600 },
+            { type: "Mess Fee", amount: 10500 }
+          ],
+          total: 86200,
+          paid: 0,
+          outstanding: 86200 // Outstanding > 0, will be red
+        },
+        "3": {
+          fees: [
+            { type: "Tuition Fee", amount: 53000 },
+            { type: "Hostel Fee", amount: 22000 },
+            { type: "Water Fee", amount: 1200 },
+            { type: "Electricity Fee", amount: 1700 },
+            { type: "Mess Fee", amount: 11000 }
+          ],
+          total: 88900,
+          paid: 88900,
+          outstanding: 0 // Outstanding = 0, will be green
+        },
+        "4": {
+          fees: [
+            { type: "Tuition Fee", amount: 54000 },
+            { type: "Hostel Fee", amount: 23000 },
+            { type: "Water Fee", amount: 1300 },
+            { type: "Electricity Fee", amount: 1800 },
+            { type: "Mess Fee", amount: 11500 }
+          ],
+          total: 91600,
+          paid: 90000,
+          outstanding: 1600 // Outstanding > 0, will be red
+        },
+        "5": {
+          fees: [
+            { type: "Tuition Fee", amount: 55000 },
+            { type: "Hostel Fee", amount: 24000 },
+            { type: "Water Fee", amount: 1400 },
+            { type: "Electricity Fee", amount: 1900 },
+            { type: "Mess Fee", amount: 12000 }
+          ],
+          total: 94300,
+          paid: 94300,
+          outstanding: 0 // Outstanding = 0, will be green
+        }
+      }
+    },
+    "B002": {
+      name: "Jane Smith",
+      id: "B002",
+      program: "B.Tech",
+      branch: "Electronics",
+      semesters: {
+        "1": {
+          fees: [
+            { type: "Tuition Fee", amount: 48000 },
+            { type: "Hostel Fee", amount: 19000 },
+            { type: "Water Fee", amount: 900 },
+            { type: "Electricity Fee", amount: 1400 },
+            { type: "Mess Fee", amount: 9500 }
+          ],
+          total: 78800,
+          paid: 78800,
+          outstanding: 0 // Outstanding = 0, will be green
+        },
+        "2": {
+          fees: [
+            { type: "Tuition Fee", amount: 49000 },
+            { type: "Hostel Fee", amount: 20000 },
+            { type: "Water Fee", amount: 1000 },
+            { type: "Electricity Fee", amount: 1500 },
+            { type: "Mess Fee", amount: 10000 }
+          ],
+          total: 81500,
+          paid: 80000,
+          outstanding: 1500 // Outstanding > 0, will be red
+        },
+        "3": {
+          fees: [
+            { type: "Tuition Fee", amount: 50000 },
+            { type: "Hostel Fee", amount: 21000 },
+            { type: "Water Fee", amount: 1100 },
+            { type: "Electricity Fee", amount: 1600 },
+            { type: "Mess Fee", amount: 10500 }
+          ],
+          total: 84200,
+          paid: 0,
+          outstanding: 84200 // Outstanding > 0, will be red
+        },
+        "4": {
+          fees: [
+            { type: "Tuition Fee", amount: 51000 },
+            { type: "Hostel Fee", amount: 22000 },
+            { type: "Water Fee", amount: 1200 },
+            { type: "Electricity Fee", amount: 1700 },
+            { type: "Mess Fee", amount: 11000 }
+          ],
+          total: 86900,
+          paid: 86000,
+          outstanding: 900 // Outstanding > 0, will be red
+        },
+        "5": {
+          fees: [
+            { type: "Tuition Fee", amount: 52000 },
+            { type: "Hostel Fee", amount: 23000 },
+            { type: "Water Fee", amount: 1300 },
+            { type: "Electricity Fee", amount: 1800 },
+            { type: "Mess Fee", amount: 11500 }
+          ],
+          total: 89600,
+          paid: 89600,
+          outstanding: 0 // Outstanding = 0, will be green
+        }
+      }
+    },
+    "B003": {
+      name: "Alex Johnson",
+      id: "B003",
+      program: "B.Tech",
+      branch: "Mechanical",
+      semesters: {
+        "1": {
+          fees: [
+            { type: "Tuition Fee", amount: 47000 },
+            { type: "Hostel Fee", amount: 18000 },
+            { type: "Water Fee", amount: 800 },
+            { type: "Electricity Fee", amount: 1300 },
+            { type: "Mess Fee", amount: 9000 }
+          ],
+          total: 76100,
+          paid: 75000,
+          outstanding: 1100 // Outstanding > 0, will be red
+        },
+        "2": {
+          fees: [
+            { type: "Tuition Fee", amount: 48000 },
+            { type: "Hostel Fee", amount: 19000 },
+            { type: "Water Fee", amount: 900 },
+            { type: "Electricity Fee", amount: 1400 },
+            { type: "Mess Fee", amount: 9500 }
+          ],
+          total: 78800,
+          paid: 0,
+          outstanding: 78800 // Outstanding > 0, will be red
+        },
+        "3": {
+          fees: [
+            { type: "Tuition Fee", amount: 49000 },
+            { type: "Hostel Fee", amount: 20000 },
+            { type: "Water Fee", amount: 1000 },
+            { type: "Electricity Fee", amount: 1500 },
+            { type: "Mess Fee", amount: 10000 }
+          ],
+          total: 81500,
+          paid: 81500,
+          outstanding: 0 // Outstanding = 0, will be green
+        },
+        "4": {
+          fees: [
+            { type: "Tuition Fee", amount: 50000 },
+            { type: "Hostel Fee", amount: 21000 },
+            { type: "Water Fee", amount: 1100 },
+            { type: "Electricity Fee", amount: 1600 },
+            { type: "Mess Fee", amount: 10500 }
+          ],
+          total: 84200,
+          paid: 83000,
+          outstanding: 1200 // Outstanding > 0, will be red
+        },
+        "5": {
+          fees: [
+            { type: "Tuition Fee", amount: 51000 },
+            { type: "Hostel Fee", amount: 22000 },
+            { type: "Water Fee", amount: 1200 },
+            { type: "Electricity Fee", amount: 1700 },
+            { type: "Mess Fee", amount: 11000 }
+          ],
+          total: 86900,
+          paid: 86900,
+          outstanding: 0 // Outstanding = 0, will be green
+        }
+      }
+    }
+  };
+
+  // Function to handle search logic (used by both button click and Enter key)
+  function performSearch() {
+    const studentId = studentIdInput.value.trim();
+    if (studentData[studentId]) {
+      const student = studentData[studentId];
+      document.getElementById("student-name").textContent = student.name;
+      document.getElementById("student-id-display").textContent = student.id;
+      document.getElementById("student-program").textContent = student.program;
+      document.getElementById("student-branch").textContent = student.branch;
+      studentInfo.style.display = "block";
+      feeSection.style.display = "block";
+      updateFeeTable("1"); // Default to semester 1
+    } else {
+      alert("Student ID not found!");
+      studentInfo.style.display = "none";
+      feeSection.style.display = "none";
+    }
+  }
+
+  // Search button click handler
+  searchBtn.addEventListener("click", performSearch);
+
+  // Enter key press handler for the student ID input
+  studentIdInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent any default form submission
+      performSearch();
+    }
+  });
+
+  // Semester selection handler
+  semesterSelect.addEventListener("change", (e) => {
+    updateFeeTable(e.target.value);
+  });
+
+  // Update fee table and amounts
+  function updateFeeTable(semester) {
+    const studentId = studentIdInput.value.trim();
+    if (!studentData[studentId]) return;
+
+    const student = studentData[studentId];
+    const semesterData = student.semesters[semester] || {};
+    const fees = semesterData.fees || [];
+
+    // Populate fee table
+    feeTableBody.innerHTML = "";
+    fees.forEach(fee => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${fee.type}</td>
+        <td>${fee.amount.toLocaleString('en-IN')}</td>
+      `;
+      feeTableBody.appendChild(row);
+    });
+
+    // Update total, paid, and outstanding amounts
+    totalAmountDisplay.textContent = semesterData.total.toLocaleString('en-IN');
+    paidAmountDisplay.textContent = semesterData.paid.toLocaleString('en-IN');
+    outstandingAmountDisplay.textContent = semesterData.outstanding.toLocaleString('en-IN');
+
+    // Apply color to outstanding amount
+    outstandingAmountDisplay.style.color = semesterData.outstanding === 0 ? '#28a745' : '#dc3545';
+  }
+</script>
+
+</body>
+</html>

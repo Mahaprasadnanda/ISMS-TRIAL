@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grade Input</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="e_supdate.css">
+</head>
+<body>
+
+<header class="mobile-header">
+  <button id="menuToggle"><i class="fas fa-bars"></i></button>
+  <h2>Grade Input</h2>
+</header>
+
+<div class="container">
+  <div class="scroll-container">
+    <aside class="sidebar" id="sidebar">
+      <a href="d_home.html" class="back-btn-sidebar">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+      </a>
+      <button class="side-btn"><i class="fas fa-bullhorn"></i> Notice Board</button>
+      <button class="side-btn"><i class="fas fa-user-graduate"></i> Student Details</button>
+      <button class="side-btn"><i class="fas fa-address-book"></i> Student FeeLedger</button>
+      <button class="side-btn"><i class="fas fa-upload"></i> Student Update</button>
+      <button class="side-btn"><i class="fas fa-chalkboard-teacher"></i> Faculty Details</button>
+      <button class="side-btn"><i class="fas fa-user-edit"></i> Faculty Update</button>
+      <button class="side-btn active"><i class="fas fa-clipboard-check"></i> Grade Input</button>
+      <button class="side-btn"><i class="fas fa-graduation-cap"></i> Student Grade Details</button>
+      <button class="side-btn"><i class="fas fa-calendar-alt"></i> Timetable</button>
+      <div class="logo-container">
+        <img src="IIIT LOGO 3.svg" alt="IIIT Logo" class="logo"/>
+        <p class="footer-text">IIIT Student Management System</p>
+        <a href="https://www.iiit-bh.ac.in" class="footer-link" target="_blank">www.iiit-bh.ac.in</a>
+      </div>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+      <div class="header-line">
+        <h1><i class="fas fa-clipboard-check"></i> Grade Input</h1>
+        <hr />
+      </div>
+      
+      <div class="student-update-container">
+        <div class="update-slab">
+          <h2><i class="fas fa-clipboard-check"></i> Input Student Grades</h2>
+          <form id="gradeInputForm">
+            <div class="form-group">
+              <label for="gradeProgram">Select Program:</label>
+              <select id="gradeProgram" required>
+                <option value="">-- Program --</option>
+                <option value="BTech">BTech</option>
+                <option value="MTech">MTech</option>
+                <option value="PhD">PhD</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="gradeSemester">Select Semester:</label>
+              <select id="gradeSemester" required>
+                <option value="">-- Select Semester --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="gradeAdmissionYear">Admission Year:</label>
+              <select id="gradeAdmissionYear" required>
+                <option value="">-- Select Year --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="gradeBranch">Select Branch:</label>
+              <select id="gradeBranch" required>
+                <option value="">-- Select Branch --</option>
+                <option value="CSE">Computer Science & Engineering</option>
+                <option value="ECE">Electronics & Communication Engineering</option>
+                <option value="IT">Information Technology</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="gradeExcelFile">Upload Grade File (Excel):</label>
+              <input type="file" id="gradeExcelFile" accept=".xlsx, .xls" required>
+            </div>
+            <button type="submit" class="submit-btn">Submit</button>
+          </form>
+        </div>
+
+        <div class="update-slab">
+          <h2><i class="fas fa-bullhorn"></i> Publish Results</h2>
+          <button id="publishResultsBtn" class="submit-btn">Publish Results</button>
+          <div id="publishedResults" style="margin-top: 20px;">
+            <p>No results published yet.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const mainContent = document.getElementById("mainContent");
+
+  // Array to store submitted grade data
+  let gradeData = [];
+
+  // Populate Admission Year dropdown
+  const populateAdmissionYears = () => {
+    const currentYear = new Date().getFullYear(); // Current year (2025)
+    const endYear = currentYear + 20; // 20 years from current year (2045)
+    
+    const admissionYearSelect = document.getElementById("gradeAdmissionYear");
+    for (let year = currentYear; year <= endYear; year++) {
+      const option = document.createElement("option");
+      option.value = year;
+      option.textContent = year;
+      admissionYearSelect.appendChild(option);
+    }
+  };
+
+  // Populate Semester dropdown based on selected program
+  const populateSemesters = () => {
+    const programSelect = document.getElementById("gradeProgram");
+    const semesterSelect = document.getElementById("gradeSemester");
+
+    programSelect.addEventListener("change", () => {
+      const program = programSelect.value;
+      semesterSelect.innerHTML = '<option value="">-- Select Semester --</option>'; // Reset options
+
+      let maxSemesters;
+      if (program === "BTech") {
+        maxSemesters = 8; // BTech: 8 semesters
+      } else if (program === "MTech") {
+        maxSemesters = 4; // MTech: 4 semesters
+      } else if (program === "PhD") {
+        maxSemesters = 10; // PhD: 10 semesters (assumption)
+      } else {
+        return; // If no program selected, do nothing
+      }
+
+      for (let i = 1; i <= maxSemesters; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = `Semester ${i}`;
+        semesterSelect.appendChild(option);
+      }
+    });
+  };
+
+  // Handle form submission to store grade data
+  const handleGradeSubmission = () => {
+    const form = document.getElementById("gradeInputForm");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const program = document.getElementById("gradeProgram").value;
+      const semester = document.getElementById("gradeSemester").value;
+      const admissionYear = document.getElementById("gradeAdmissionYear").value;
+      const branch = document.getElementById("gradeBranch").value;
+      const fileInput = document.getElementById("gradeExcelFile");
+      const fileName = fileInput.files[0]?.name || "No file uploaded";
+
+      // Store the data
+      gradeData.push({
+        program,
+        semester,
+        admissionYear,
+        branch,
+        fileName,
+        timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+      });
+
+      alert("Grade data submitted successfully!");
+      form.reset(); // Reset the form
+      document.getElementById("gradeSemester").innerHTML = '<option value="">-- Select Semester --</option>'; // Reset semester dropdown
+    });
+  };
+
+  // Handle publishing results
+  const handlePublishResults = () => {
+    const publishBtn = document.getElementById("publishResultsBtn");
+    const resultsDiv = document.getElementById("publishedResults");
+
+    publishBtn.addEventListener("click", () => {
+      if (gradeData.length === 0) {
+        resultsDiv.innerHTML = "<p>No results published yet.</p>";
+        return;
+      }
+
+      let html = "<h3>Published Grade Results</h3><ul>";
+      gradeData.forEach((data, index) => {
+        html += `
+          <li>
+            <strong>Entry ${index + 1}:</strong> 
+            Program: ${data.program}, 
+            Semester: ${data.semester}, 
+            Admission Year: ${data.admissionYear}, 
+            Branch: ${data.branch}, 
+            File: ${data.fileName}, 
+            Submitted: ${data.timestamp}
+          </li>
+        `;
+      });
+      html += "</ul>";
+      resultsDiv.innerHTML = html;
+    });
+  };
+
+  // Initialize functions on page load
+  populateAdmissionYears();
+  populateSemesters();
+  handleGradeSubmission();
+  handlePublishResults();
+
+  // Sidebar toggle for mobile
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("show");
+  });
+
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768) {
+      if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        sidebar.classList.remove("show");
+      }
+    }
+  });
+
+  // Synchronized scrolling between sidebar and main content
+  let isSyncingSidebar = false;
+  let isSyncingMain = false;
+
+  sidebar.addEventListener("scroll", () => {
+    if (!isSyncingSidebar) {
+      isSyncingMain = true;
+      const sidebarScrollRatio = sidebar.scrollTop / (sidebar.scrollHeight - sidebar.clientHeight);
+      mainContent.scrollTop = sidebarScrollRatio * (mainContent.scrollHeight - mainContent.clientHeight);
+    }
+    isSyncingSidebar = false;
+  });
+
+  mainContent.addEventListener("scroll", () => {
+    if (!isSyncingMain) {
+      isSyncingSidebar = true;
+      const mainScrollRatio = mainContent.scrollTop / (mainContent.scrollHeight - mainContent.clientHeight);
+      sidebar.scrollTop = mainScrollRatio * (sidebar.scrollHeight - sidebar.clientHeight);
+    }
+    isSyncingMain = false;
+  });
+</script>
+
+</body>
+</html>
